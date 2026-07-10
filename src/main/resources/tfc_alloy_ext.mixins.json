@@ -1,0 +1,12 @@
+{
+    "required": true,
+    "package": "com.yukimods.alloyext.mixin",
+    "compatibilityLevel": "JAVA_21",
+    "mixins": [
+        "FluidAlloyMixin",
+        "FoundryTapMixin",
+        "CruciblePourSpeedMixin"
+    ],
+    "client": [],
+    "server": []
+}

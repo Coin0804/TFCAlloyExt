@@ -1,0 +1,11 @@
+{
+  "values": [
+    "tfc_alloy_ext:metal/inferior_copper",
+    "tfc_alloy_ext:metal/inferior_tin",
+    "tfc_alloy_ext:metal/inferior_zinc",
+    "tfc_alloy_ext:metal/inferior_bismuth",
+    "tfc_alloy_ext:metal/inferior_gold",
+    "tfc_alloy_ext:metal/inferior_silver",
+    "tfc_alloy_ext:metal/inferior_nickel"
+  ]
+}

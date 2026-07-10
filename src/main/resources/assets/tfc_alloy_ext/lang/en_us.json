@@ -1,0 +1,27 @@
+{
+  "fluid.tfc_alloy_ext.metal.inferior_copper": "Molten Inferior Copper Alloy",
+  "fluid.tfc_alloy_ext.metal.inferior_tin": "Molten Inferior Tin Alloy",
+  "fluid.tfc_alloy_ext.metal.inferior_zinc": "Molten Inferior Zinc Alloy",
+  "fluid.tfc_alloy_ext.metal.inferior_bismuth": "Molten Inferior Bismuth Alloy",
+  "fluid.tfc_alloy_ext.metal.inferior_gold": "Molten Inferior Gold Alloy",
+  "fluid.tfc_alloy_ext.metal.inferior_silver": "Molten Inferior Silver Alloy",
+  "fluid.tfc_alloy_ext.metal.inferior_nickel": "Molten Inferior Nickel Alloy",
+
+  "item.tfc_alloy_ext.inferior_copper_ingot": "Inferior Copper Alloy Ingot",
+  "item.tfc_alloy_ext.inferior_tin_ingot": "Inferior Tin Alloy Ingot",
+  "item.tfc_alloy_ext.inferior_zinc_ingot": "Inferior Zinc Alloy Ingot",
+  "item.tfc_alloy_ext.inferior_bismuth_ingot": "Inferior Bismuth Alloy Ingot",
+  "item.tfc_alloy_ext.inferior_gold_ingot": "Inferior Gold Alloy Ingot",
+  "item.tfc_alloy_ext.inferior_silver_ingot": "Inferior Silver Alloy Ingot",
+  "item.tfc_alloy_ext.inferior_nickel_ingot": "Inferior Nickel Alloy Ingot",
+
+  "item.tfc_alloy_ext.inferior_copper_bucket": "Molten Inferior Copper Alloy Bucket",
+  "item.tfc_alloy_ext.inferior_tin_bucket": "Molten Inferior Tin Alloy Bucket",
+  "item.tfc_alloy_ext.inferior_zinc_bucket": "Molten Inferior Zinc Alloy Bucket",
+  "item.tfc_alloy_ext.inferior_bismuth_bucket": "Molten Inferior Bismuth Alloy Bucket",
+  "item.tfc_alloy_ext.inferior_gold_bucket": "Molten Inferior Gold Alloy Bucket",
+  "item.tfc_alloy_ext.inferior_silver_bucket": "Molten Inferior Silver Alloy Bucket",
+  "item.tfc_alloy_ext.inferior_nickel_bucket": "Molten Inferior Nickel Alloy Bucket",
+
+  "itemGroup.tfc_alloy_ext": "TFC Alloy Extension"
+}

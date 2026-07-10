@@ -1,0 +1,8 @@
+{
+  "forging_temperature": 138.0,
+  "heat_capacity": 7.142857,
+  "ingredient": {
+    "item": "tfc_alloy_ext:inferior_tin_ingot"
+  },
+  "welding_temperature": 184.0
+}

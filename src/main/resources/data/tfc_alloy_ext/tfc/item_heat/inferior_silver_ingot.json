@@ -1,0 +1,8 @@
+{
+  "forging_temperature": 576.6,
+  "heat_capacity": 2.083333,
+  "ingredient": {
+    "item": "tfc_alloy_ext:inferior_silver_ingot"
+  },
+  "welding_temperature": 768.8
+}

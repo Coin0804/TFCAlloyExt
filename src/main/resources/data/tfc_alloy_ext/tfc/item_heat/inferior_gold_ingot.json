@@ -1,0 +1,8 @@
+{
+  "forging_temperature": 636.0,
+  "heat_capacity": 1.666667,
+  "ingredient": {
+    "item": "tfc_alloy_ext:inferior_gold_ingot"
+  },
+  "welding_temperature": 848.0
+}
