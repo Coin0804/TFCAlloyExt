@@ -1,0 +1,1 @@
+{"type":"tfc:heating","ingredient":{"type":"neoforge:components","items":["tfc:metal/rod/gold"],"components":{"tfc_alloy_ext:inferior_origin":{"base_metal":"gold"}}},"result_fluid":{"amount":50,"id":"tfc_alloy_ext:metal/inferior_gold"},"temperature":1007.0}

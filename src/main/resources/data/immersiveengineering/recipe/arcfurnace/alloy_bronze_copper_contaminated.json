@@ -1,0 +1,1 @@
+{"type": "immersiveengineering:arc_furnace", "additives": [{"tag": "c:ingots/tin"}], "energy": 51200, "input": {"basePredicate": {"type": "neoforge:components", "items": ["tfc:metal/ingot/copper"], "components": {"tfc_alloy_ext:inferior_origin": {"base_metal": "copper"}}}, "count": 9}, "results": [{"count": 10, "id": "tfc:metal/ingot/unknown"}], "time": 100}

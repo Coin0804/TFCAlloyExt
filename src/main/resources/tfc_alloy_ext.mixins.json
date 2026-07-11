@@ -5,7 +5,14 @@
     "mixins": [
         "FluidAlloyMixin",
         "FoundryTapMixin",
-        "CruciblePourSpeedMixin"
+        "CruciblePourSpeedMixin",
+        "AnvilRecipeMixin",
+        "WeldingRecipeMixin",
+        "HeatingRecipeMixin",
+        "IEMultiblockProcessMixin",
+        "IEOutputItemMixin",
+        "IEArcFurnaceRecipeMixin",
+        "IEAlloyRecipeMixin"
     ],
     "client": [],
     "server": []

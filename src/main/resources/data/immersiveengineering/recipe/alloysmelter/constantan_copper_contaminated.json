@@ -1,0 +1,1 @@
+{"type": "immersiveengineering:alloy", "input0": {"basePredicate": {"type": "neoforge:components", "items": ["tfc:metal/ingot/copper"], "components": {"tfc_alloy_ext:inferior_origin": {"base_metal": "copper"}}}, "count": 1}, "input1": {"tag": "c:ingots/nickel"}, "result": {"id": "tfc:metal/ingot/unknown", "count": 2}}

@@ -1,0 +1,1 @@
+{"type":"tfc:heating","ingredient":{"type":"neoforge:components","items":["tfc:metal/block/bismuth"],"components":{"tfc_alloy_ext:inferior_origin":{"base_metal":"bismuth"}}},"result_fluid":{"amount":100,"id":"tfc_alloy_ext:metal/inferior_bismuth"},"temperature":257.0}

@@ -1,0 +1,1 @@
+{"type":"tfc:heating","ingredient":{"type":"neoforge:components","items":["tfc:metal/ingot/zinc"],"components":{"tfc_alloy_ext:inferior_origin":{"base_metal":"zinc"}}},"result_fluid":{"amount":100,"id":"tfc_alloy_ext:metal/inferior_zinc"},"temperature":399.0}

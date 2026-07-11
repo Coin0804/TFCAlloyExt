@@ -10,13 +10,13 @@ import java.util.*;
  */
 public enum InferiorMetal {
 
-    COPPER("copper", 1084, 0xFFA73118),
-    TIN("tin", 232, 0xFF8195AC),
-    ZINC("zinc", 420, 0xFFACACB5),
-    BISMUTH("bismuth", 271, 0xFF394563),
-    GOLD("gold", 1063, 0xFFCDB80C),
-    SILVER("silver", 961, 0xFF858B86),
-    NICKEL("nickel", 1455, 0xFF3FA22D);
+    COPPER("copper", 1026, 0xFFA73118),
+    TIN("tin", 219, 0xFF8195AC),
+    ZINC("zinc", 399, 0xFFACACB5),
+    BISMUTH("bismuth", 257, 0xFF394563),
+    GOLD("gold", 1007, 0xFFCDB80C),
+    SILVER("silver", 913, 0xFF858B86),
+    NICKEL("nickel", 1380, 0xFF3FA22D);
 
     private final String name;
     private final int meltingTemp;

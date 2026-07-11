@@ -1,0 +1,1 @@
+{"type":"tfc:heating","ingredient":{"type":"neoforge:components","items":["tfc:metal/double_ingot/nickel"],"components":{"tfc_alloy_ext:inferior_origin":{"base_metal":"nickel"}}},"result_fluid":{"amount":200,"id":"tfc_alloy_ext:metal/inferior_nickel"},"temperature":1380.0}

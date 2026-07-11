@@ -1,8 +1,0 @@
-{
-  "forging_temperature": 871.8,
-  "heat_capacity": 2.083333,
-  "ingredient": {
-    "item": "tfc_alloy_ext:inferior_nickel_ingot"
-  },
-  "welding_temperature": 1162.4
-}

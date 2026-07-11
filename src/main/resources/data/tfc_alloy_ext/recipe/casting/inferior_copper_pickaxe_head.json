@@ -1,0 +1,1 @@
+{"type":"tfc:casting","fluid":{"amount":100,"fluid":"tfc_alloy_ext:metal/inferior_copper"},"mold":{"item":"tfc:ceramic/pickaxe_head_mold"},"result":{"count":1,"id":"tfc:metal/pickaxe_head/copper","components":{"tfc_alloy_ext:inferior_origin":{"base_metal":"copper"}}}}

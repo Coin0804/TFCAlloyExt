@@ -1,0 +1,1 @@
+{"type":"tfc:heating","ingredient":{"type":"neoforge:components","items":["tfc:metal/weathered_block/silver"],"components":{"tfc_alloy_ext:inferior_origin":{"base_metal":"silver"}}},"result_fluid":{"amount":100,"id":"tfc_alloy_ext:metal/inferior_silver"},"temperature":913.0}

@@ -1,1 +1,1 @@
-{"type":"tfc:casting","break_chance":0.01,"fluid":{"amount":100,"fluid":"tfc_alloy_ext:metal/inferior_tin"},"mold":{"item":"tfc:ceramic/fire_ingot_mold"},"result":{"count":1,"id":"tfc_alloy_ext:inferior_tin_ingot"}}
+{"type":"tfc:casting","break_chance":0.01,"fluid":{"amount":100,"fluid":"tfc_alloy_ext:metal/inferior_tin"},"mold":{"item":"tfc:ceramic/fire_ingot_mold"},"result":{"count":1,"id":"tfc:metal/ingot/tin","components":{"tfc_alloy_ext:inferior_origin":{"base_metal":"tin"}}}}

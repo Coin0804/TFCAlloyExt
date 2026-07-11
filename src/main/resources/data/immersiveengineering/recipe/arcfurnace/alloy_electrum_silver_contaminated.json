@@ -1,0 +1,1 @@
+{"type": "immersiveengineering:arc_furnace", "additives": [{"basePredicate": {"type": "neoforge:components", "items": ["tfc:metal/ingot/silver"], "components": {"tfc_alloy_ext:inferior_origin": {"base_metal": "silver"}}}, "count": 1}], "energy": 51200, "input": {"tag": "c:ingots/gold"}, "results": [{"count": 2, "id": "tfc:metal/ingot/unknown"}], "time": 100}

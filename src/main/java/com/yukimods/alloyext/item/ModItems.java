@@ -10,58 +10,32 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 import static com.yukimods.alloyext.TFCAlloyExt.MOD_ID;
 
 /**
- * 本模组物品注册中心 —— 7 种劣等合金锭 + 7 种流体桶。
+ * 本模组物品注册中心 —— 7 种流体桶。
+ * <p>
+ * 劣等锭不再独立注册，改为通过浇铸产 TFC 原生锭 + {@code InferiorOrigin} 组件区分。
  */
 public class ModItems {
 
     public static final DeferredRegister<Item> ITEMS =
             DeferredRegister.create(Registries.ITEM, MOD_ID);
 
-    // ─── 劣等合金锭 ────────────────────────────────────────
-
-    public static final DeferredHolder<Item, Item> INFERIOR_COPPER_INGOT =
-            ITEMS.register(InferiorMetal.COPPER.getIngotId(), () -> new Item(new Item.Properties()));
-    public static final DeferredHolder<Item, Item> INFERIOR_TIN_INGOT =
-            ITEMS.register(InferiorMetal.TIN.getIngotId(), () -> new Item(new Item.Properties()));
-    public static final DeferredHolder<Item, Item> INFERIOR_ZINC_INGOT =
-            ITEMS.register(InferiorMetal.ZINC.getIngotId(), () -> new Item(new Item.Properties()));
-    public static final DeferredHolder<Item, Item> INFERIOR_BISMUTH_INGOT =
-            ITEMS.register(InferiorMetal.BISMUTH.getIngotId(), () -> new Item(new Item.Properties()));
-    public static final DeferredHolder<Item, Item> INFERIOR_GOLD_INGOT =
-            ITEMS.register(InferiorMetal.GOLD.getIngotId(), () -> new Item(new Item.Properties()));
-    public static final DeferredHolder<Item, Item> INFERIOR_SILVER_INGOT =
-            ITEMS.register(InferiorMetal.SILVER.getIngotId(), () -> new Item(new Item.Properties()));
-    public static final DeferredHolder<Item, Item> INFERIOR_NICKEL_INGOT =
-            ITEMS.register(InferiorMetal.NICKEL.getIngotId(), () -> new Item(new Item.Properties()));
-
-    // ─── 流体桶（SafeBucketItem：有流体渲染，无交互） ──────
-
     public static final DeferredHolder<Item, Item> INFERIOR_COPPER_BUCKET =
-            ITEMS.register(InferiorMetal.COPPER.getBucketId(), () ->
-                    new SafeBucketItem(InferiorMetalFluids.INFERIOR_COPPER.getSource(),
-                            new Item.Properties().stacksTo(1)));
+            bucket(InferiorMetal.COPPER, InferiorMetalFluids.INFERIOR_COPPER);
     public static final DeferredHolder<Item, Item> INFERIOR_TIN_BUCKET =
-            ITEMS.register(InferiorMetal.TIN.getBucketId(), () ->
-                    new SafeBucketItem(InferiorMetalFluids.INFERIOR_TIN.getSource(),
-                            new Item.Properties().stacksTo(1)));
+            bucket(InferiorMetal.TIN, InferiorMetalFluids.INFERIOR_TIN);
     public static final DeferredHolder<Item, Item> INFERIOR_ZINC_BUCKET =
-            ITEMS.register(InferiorMetal.ZINC.getBucketId(), () ->
-                    new SafeBucketItem(InferiorMetalFluids.INFERIOR_ZINC.getSource(),
-                            new Item.Properties().stacksTo(1)));
+            bucket(InferiorMetal.ZINC, InferiorMetalFluids.INFERIOR_ZINC);
     public static final DeferredHolder<Item, Item> INFERIOR_BISMUTH_BUCKET =
-            ITEMS.register(InferiorMetal.BISMUTH.getBucketId(), () ->
-                    new SafeBucketItem(InferiorMetalFluids.INFERIOR_BISMUTH.getSource(),
-                            new Item.Properties().stacksTo(1)));
+            bucket(InferiorMetal.BISMUTH, InferiorMetalFluids.INFERIOR_BISMUTH);
     public static final DeferredHolder<Item, Item> INFERIOR_GOLD_BUCKET =
-            ITEMS.register(InferiorMetal.GOLD.getBucketId(), () ->
-                    new SafeBucketItem(InferiorMetalFluids.INFERIOR_GOLD.getSource(),
-                            new Item.Properties().stacksTo(1)));
+            bucket(InferiorMetal.GOLD, InferiorMetalFluids.INFERIOR_GOLD);
     public static final DeferredHolder<Item, Item> INFERIOR_SILVER_BUCKET =
-            ITEMS.register(InferiorMetal.SILVER.getBucketId(), () ->
-                    new SafeBucketItem(InferiorMetalFluids.INFERIOR_SILVER.getSource(),
-                            new Item.Properties().stacksTo(1)));
+            bucket(InferiorMetal.SILVER, InferiorMetalFluids.INFERIOR_SILVER);
     public static final DeferredHolder<Item, Item> INFERIOR_NICKEL_BUCKET =
-            ITEMS.register(InferiorMetal.NICKEL.getBucketId(), () ->
-                    new SafeBucketItem(InferiorMetalFluids.INFERIOR_NICKEL.getSource(),
-                            new Item.Properties().stacksTo(1)));
+            bucket(InferiorMetal.NICKEL, InferiorMetalFluids.INFERIOR_NICKEL);
+
+    private static DeferredHolder<Item, Item> bucket(InferiorMetal metal, net.dries007.tfc.common.fluids.FluidHolder<?> fluid) {
+        return ITEMS.register(metal.getBucketId(), () ->
+                new SafeBucketItem(fluid.getSource(), new Item.Properties().stacksTo(1)));
+    }
 }
