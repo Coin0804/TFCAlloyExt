@@ -10,6 +10,7 @@
     "tfc_alloy_ext:metal/inferior_aluminum",
     "tfc_alloy_ext:metal/inferior_lead",
     "tfc_alloy_ext:metal/inferior_uranium",
+    "tfc_alloy_ext:metal/inferior_chromium",
     "tfc_alloy_ext:metal/solder"
   ]
 }

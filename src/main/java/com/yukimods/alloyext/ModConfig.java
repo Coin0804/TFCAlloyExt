@@ -18,6 +18,13 @@ public class ModConfig {
      */
     public static final ModConfigSpec.DoubleValue INFERIOR_ALLOY_THRESHOLD;
 
+    /**
+     * 铁劣等合金系统开关。
+     * 开启后，坩埚中锻铁 (wrought_iron) 被识别为纯铁，
+     * 占比达阈值时产出铸铁 (cast_iron) 作为劣等变体。
+     */
+    public static final ModConfigSpec.BooleanValue ENABLE_IRON_INFERIOR_SYSTEM;
+
     static {
         ModConfigSpec.Builder builder = new ModConfigSpec.Builder();
 
@@ -35,6 +42,12 @@ public class ModConfig {
                         "Lower values = more forgiving (more inferior alloys, less waste).",
                         "Higher values = stricter (less inferior alloys, more Unknown/waste).")
                 .defineInRange("inferiorAlloyThreshold", 0.75, 0.50, 1.00);
+        ENABLE_IRON_INFERIOR_SYSTEM = builder
+                .comment("Enable the iron inferior alloy system.",
+                        "When true, wrought_iron in an impure crucible mix produces cast_iron as the inferior output.",
+                        "No new fluids/items are registered; uses existing TFC cast_iron and wrought_iron.",
+                        "Default: false (disabled).")
+                .define("enableIronInferiorSystem", false);
         builder.pop();
 
         SERVER_SPEC = builder.build();

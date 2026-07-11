@@ -1,19 +1,17 @@
 package com.yukimods.alloyext.fluid;
 
 import com.yukimods.alloyext.InferiorMetal;
+import com.yukimods.alloyext.util.FluidRegistrationHelper;
 import net.dries007.tfc.common.blocks.MoltenFluidBlock;
 import net.dries007.tfc.common.fluids.FluidHolder;
 import net.dries007.tfc.common.fluids.MoltenFluid;
-import com.yukimods.alloyext.item.SafeBucketItem;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraft.world.level.pathfinder.PathType;
-import net.neoforged.neoforge.common.SoundActions;
 import net.neoforged.neoforge.fluids.BaseFlowingFluid;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.registries.DeferredHolder;
@@ -47,7 +45,7 @@ public class InferiorMetalFluids {
             DeferredRegister.create(Registries.ITEM, MOD_ID);
 
     private static final BlockBehaviour.Properties FLUID_BLOCK_PROPS = BlockBehaviour.Properties.of()
-            .liquid().noCollission().strength(100f).noLootTable();
+            .liquid().noCollission().strength(100f).noLootTable().replaceable();
 
     // ─── 内部 map（register() 填充，按 static 声明顺序执行） ─
 
@@ -113,16 +111,10 @@ public class InferiorMetalFluids {
      * 不会在类加载期间提前 resolve。
      */
     private static FluidHolder<BaseFlowingFluid> register(InferiorMetal metal) {
-        // 1. FluidType（颜色和纹理通过 RegisterClientExtensionsEvent 注册）
+        // 1. FluidType
         var typeHolder = FLUID_TYPES.register(metal.getFluidId(),
-                () -> new FluidType(FluidType.Properties.create()
-                        .adjacentPathType(PathType.LAVA)
-                        .sound(SoundActions.BUCKET_FILL, SoundEvents.BUCKET_FILL)
-                        .sound(SoundActions.BUCKET_EMPTY, SoundEvents.BUCKET_EMPTY_LAVA)
-                        .lightLevel(15).density(3000).viscosity(6000).temperature(1300)
-                        .canConvertToSource(false)
-                        .descriptionId("fluid." + MOD_ID + ".metal.inferior_" + metal.getName())
-                ));
+                () -> FluidRegistrationHelper.createMoltenFluidType(
+                        "fluid." + MOD_ID + ".metal.inferior_" + metal.getName()));
 
         // 2. 数组引用 — 解决 Properties ↔ Fluid 循环依赖
         BaseFlowingFluid.Properties[] propsRef = new BaseFlowingFluid.Properties[1];
@@ -140,17 +132,15 @@ public class InferiorMetalFluids {
 
         // 5. 桶物品 — SafeBucketItem（禁用放置交互）
         var bucketHolder = ITEMS.register(metal.getBucketId(),
-                () -> new SafeBucketItem(sourceHolder.get(), new Item.Properties().stacksTo(1)));
+                () -> new BucketItem(sourceHolder.get(), new Item.Properties().stacksTo(1)));
         @SuppressWarnings({"rawtypes", "unchecked"})
         var bucketEntry = (DeferredHolder<Item, ? extends Item>) (DeferredHolder<?, ?>) bucketHolder;
         BUCKET_MAP.put(metal.getName(), bucketEntry);
 
-        // 6. Properties — bucket 指向桶物品（与 TFC 金属注册模式一致）
+        // 6. Properties
         propsRef[0] = new BaseFlowingFluid.Properties(typeHolder, sourceHolder, flowingHolder)
-                .block(blockHolder)
-                .bucket(bucketHolder)
-                .slopeFindDistance(4)
-                .tickRate(30);
+                .block(blockHolder).bucket(bucketHolder);
+        FluidRegistrationHelper.configureMoltenProperties(propsRef[0]);
 
         // 7. FluidHolder
         @SuppressWarnings({"rawtypes", "unchecked"})

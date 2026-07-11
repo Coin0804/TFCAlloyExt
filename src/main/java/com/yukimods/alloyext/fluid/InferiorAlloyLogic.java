@@ -3,6 +3,8 @@ package com.yukimods.alloyext.fluid;
 import com.yukimods.alloyext.InferiorMetal;
 import com.yukimods.alloyext.ModConfig;
 import it.unimi.dsi.fastutil.objects.Object2DoubleMap;
+import net.dries007.tfc.common.fluids.TFCFluids;
+import net.dries007.tfc.util.Metal;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidStack;
@@ -24,6 +26,10 @@ public class InferiorAlloyLogic {
 
     /** 能产生劣等变体的纯金属名称集合（由 {@link InferiorMetal} 枚举驱动） */
     private static final Set<String> PURE_METALS = InferiorMetal.NAMES;
+
+    /** 铁劣等系统的纯金属名和劣等金属名 */
+    private static final String WROUGHT_IRON = "wrought_iron";
+    private static final String CAST_IRON = "cast_iron";
 
     /**
      * 解析流体混合物，判断是否应替换为劣等合金。
@@ -48,15 +54,25 @@ public class InferiorAlloyLogic {
             double amount = entry.getDoubleValue();
 
             if (InferiorMetalFluids.isInferiorFluid(fluid) ||
-                    InferiorAddonMetals.isInferiorAddonFluid(fluid)) {
+                    InferiorAddonMetals.isInferiorAddonFluid(fluid) ||
+                    InferiorFirmalifeMetals.isInferiorFirmalifeFluid(fluid) ||
+                    isCastIronFluid(fluid)) {
                 inferiorFluids.add(fluid);
             } else {
                 String metalName = extractPureMetalName(fluid);
                 if (metalName == null) {
                     metalName = InferiorAddonMetals.extractAddonPureMetalName(fluid);
                 }
+                if (metalName == null) {
+                    metalName = InferiorFirmalifeMetals.extractFirmalifePureMetalName(fluid);
+                }
+                if (metalName == null && isWroughtIronFluid(fluid)) {
+                    metalName = WROUGHT_IRON;
+                }
                 if (metalName != null && (PURE_METALS.contains(metalName) ||
-                        InferiorAddonMetals.PURE_METAL_NAMES.contains(metalName))) {
+                        InferiorAddonMetals.PURE_METAL_NAMES.contains(metalName) ||
+                        InferiorFirmalifeMetals.PURE_METAL_NAMES.contains(metalName) ||
+                        WROUGHT_IRON.equals(metalName))) {
                     pureAmounts.merge(metalName, amount, Double::sum);
                 } else {
                     // 非目标金属（水、TFC合金流体等）→ 保持 UNKNOWN
@@ -99,6 +115,24 @@ public class InferiorAlloyLogic {
         return null;
     }
 
+    // ─── 铁劣等系统辅助 ────────────────────────────────────
+
+    private static boolean isWroughtIronFluid(Fluid fluid) {
+        if (!ModConfig.ENABLE_IRON_INFERIOR_SYSTEM.get()) return false;
+        var key = BuiltInRegistries.FLUID.getKey(fluid);
+        return key != null && "tfc".equals(key.getNamespace())
+                && ("metal/" + WROUGHT_IRON).equals(key.getPath());
+    }
+
+    private static boolean isCastIronFluid(Fluid fluid) {
+        if (!ModConfig.ENABLE_IRON_INFERIOR_SYSTEM.get()) return false;
+        var key = BuiltInRegistries.FLUID.getKey(fluid);
+        return key != null && "tfc".equals(key.getNamespace())
+                && ("metal/" + CAST_IRON).equals(key.getPath());
+    }
+
+    // ─── 通用辅助 ──────────────────────────────────────────
+
     /**
      * 从 TFC 纯金属流体 ID 提取金属名称。
      * 例如 "tfc:metal/copper" → "copper"，"tfc:metal/unknown" → null。
@@ -115,18 +149,31 @@ public class InferiorAlloyLogic {
         return null;
     }
 
-    /** 从 TFC 或 IE Addon 劣等流体中提取基础金属名 */
+    /** 从 TFC / IE Addon / Firmalife / Iron 劣等流体中提取基础金属名 */
     @Nullable
     private static String getBaseMetalFromAnyInferior(Fluid fluid) {
         String name = InferiorMetalFluids.getBaseMetalFromInferior(fluid);
-        return name != null ? name : InferiorAddonMetals.getBaseMetalFromInferior(fluid);
+        if (name != null) return name;
+        name = InferiorAddonMetals.getBaseMetalFromInferior(fluid);
+        if (name != null) return name;
+        name = InferiorFirmalifeMetals.getBaseMetalFromInferior(fluid);
+        if (name != null) return name;
+        // 铁劣等：cast_iron 基础金属映射为 "wrought_iron"（纯铁），才能与 pureAmounts 匹配
+        if (isCastIronFluid(fluid)) return WROUGHT_IRON;
+        return null;
     }
 
-    /** 查找劣等 FluidHolder（先查 TFC，再查 IE Addon） */
+    /** 查找劣等 FluidHolder（先查 TFC，再查 IE Addon，再查 Firmalife，铁返回 TFC 原生 cast_iron） */
     @Nullable
     private static FluidHolder<BaseFlowingFluid> getInferiorFluidHolder(String baseMetal) {
+        // 铁劣等：wrought_iron 的劣等变体是 TFC 原生 cast_iron
+        if (WROUGHT_IRON.equals(baseMetal) && ModConfig.ENABLE_IRON_INFERIOR_SYSTEM.get()) {
+            return TFCFluids.METALS.get(Metal.CAST_IRON);
+        }
         var holder = InferiorMetalFluids.getInferiorFluid(baseMetal);
         if (holder != null) return holder;
-        return InferiorAddonMetals.getFluid(baseMetal);
+        holder = InferiorAddonMetals.getFluid(baseMetal);
+        if (holder != null) return holder;
+        return InferiorFirmalifeMetals.getFluid(baseMetal);
     }
 }

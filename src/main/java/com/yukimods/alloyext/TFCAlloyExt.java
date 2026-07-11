@@ -1,6 +1,7 @@
 package com.yukimods.alloyext;
 
 import com.yukimods.alloyext.fluid.InferiorAddonMetals;
+import com.yukimods.alloyext.fluid.InferiorFirmalifeMetals;
 import com.yukimods.alloyext.fluid.InferiorMetalFluids;
 import com.yukimods.alloyext.metal.SolderMetal;
 import net.minecraft.core.component.DataComponentType;
@@ -61,6 +62,15 @@ public class TFCAlloyExt {
             InferiorAddonMetals.BLOCKS.register(modEventBus);
             InferiorAddonMetals.ITEMS.register(modEventBus);
             LOGGER.info("已激活 IE Addon 劣等金属：铝、铅、铀");
+        }
+
+        // Firmalife 劣等合金（1 种：铬，仅当 firmalife 存在时注册）
+        if (InferiorFirmalifeMetals.isEnabled()) {
+            InferiorFirmalifeMetals.FLUID_TYPES.register(modEventBus);
+            InferiorFirmalifeMetals.FLUIDS.register(modEventBus);
+            InferiorFirmalifeMetals.BLOCKS.register(modEventBus);
+            InferiorFirmalifeMetals.ITEMS.register(modEventBus);
+            LOGGER.info("已激活 Firmalife 劣等金属：铬");
         }
 
         // 焊锡金属 — 非劣等合金

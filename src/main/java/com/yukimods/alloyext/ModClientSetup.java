@@ -1,6 +1,7 @@
 package com.yukimods.alloyext;
 
 import com.yukimods.alloyext.fluid.InferiorAddonMetals;
+import com.yukimods.alloyext.fluid.InferiorFirmalifeMetals;
 import com.yukimods.alloyext.fluid.InferiorMetalFluids;
 import com.yukimods.alloyext.metal.SolderMetal;
 import net.dries007.tfc.client.ClientEventHandler;
@@ -48,6 +49,18 @@ public class ModClientSetup {
             }
         }
 
+        // Firmalife 劣等金属（仅当 firmalife 存在时）
+        if (InferiorFirmalifeMetals.isEnabled()) {
+            var holder = InferiorFirmalifeMetals.getFluid("chromium");
+            if (holder != null) {
+                event.registerFluidType(
+                        new FluidRendererExtension(InferiorFirmalifeMetals.getColor("chromium"),
+                                ClientEventHandler.MOLTEN_STILL, ClientEventHandler.MOLTEN_FLOW,
+                                null, null),
+                        holder.getType());
+            }
+        }
+
         // 焊锡流体
         event.registerFluidType(
                 new FluidRendererExtension(SOLDER_COLOR,
@@ -64,7 +77,6 @@ public class ModClientSetup {
     @SubscribeEvent
     static void registerItemColors(RegisterColorHandlersEvent.Item event) {
         var colors = new DynamicFluidContainerModel.Colors();
-        int count = 0;
 
         for (var fluid : BuiltInRegistries.FLUID) {
             var key = BuiltInRegistries.FLUID.getKey(fluid);
@@ -73,11 +85,7 @@ public class ModClientSetup {
             var bucket = fluid.getBucket();
             if (bucket != null) {
                 event.register(colors, bucket);
-                count++;
-            } else {
-                TFCAlloyExt.LOGGER.warn("[ItemColor] fluid {} has null bucket!", key);
             }
         }
-        TFCAlloyExt.LOGGER.info("[ItemColor] registered for {} bucket items", count);
     }
 }

@@ -1,6 +1,7 @@
 package com.yukimods.alloyext;
 
 import com.yukimods.alloyext.fluid.InferiorAddonMetals;
+import com.yukimods.alloyext.fluid.InferiorFirmalifeMetals;
 import com.yukimods.alloyext.fluid.InferiorMetalFluids;
 import com.yukimods.alloyext.metal.SolderMetal;
 import net.minecraft.core.registries.Registries;
@@ -36,6 +37,10 @@ public class ModCreativeTab {
                             output.accept(InferiorAddonMetals.INFERIOR_ALUMINUM_BUCKET.get());
                             output.accept(InferiorAddonMetals.INFERIOR_LEAD_BUCKET.get());
                             output.accept(InferiorAddonMetals.INFERIOR_URANIUM_BUCKET.get());
+                        }
+                        // Firmalife 劣等合金桶（仅当 firmalife 存在时）
+                        if (InferiorFirmalifeMetals.isEnabled()) {
+                            output.accept(InferiorFirmalifeMetals.INFERIOR_CHROMIUM_BUCKET.get());
                         }
                         // 焊锡
                         output.accept(SolderMetal.INGOT.get());

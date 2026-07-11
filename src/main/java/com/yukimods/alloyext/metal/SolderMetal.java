@@ -1,16 +1,15 @@
 package com.yukimods.alloyext.metal;
 
+import com.yukimods.alloyext.util.FluidRegistrationHelper;
 import net.dries007.tfc.common.blocks.MoltenFluidBlock;
 import net.dries007.tfc.common.fluids.FluidHolder;
 import net.dries007.tfc.common.fluids.MoltenFluid;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraft.world.level.pathfinder.PathType;
-import net.neoforged.neoforge.common.SoundActions;
 import net.neoforged.neoforge.fluids.BaseFlowingFluid;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.registries.DeferredHolder;
@@ -48,7 +47,7 @@ public class SolderMetal {
             DeferredRegister.create(Registries.ITEM, MOD_ID);
 
     private static final BlockBehaviour.Properties FLUID_BLOCK_PROPS = BlockBehaviour.Properties.of()
-            .liquid().noCollission().strength(100f).noLootTable();
+            .liquid().noCollission().strength(100f).noLootTable().replaceable();
 
     // ─── 注册 Holder ──────────────────────────────────────
 
@@ -61,14 +60,7 @@ public class SolderMetal {
     static {
         // 1. FluidType
         FLUID_TYPE = FLUID_TYPES.register(FLUID_ID,
-                () -> new FluidType(FluidType.Properties.create()
-                        .adjacentPathType(PathType.LAVA)
-                        .sound(SoundActions.BUCKET_FILL, SoundEvents.BUCKET_FILL)
-                        .sound(SoundActions.BUCKET_EMPTY, SoundEvents.BUCKET_EMPTY_LAVA)
-                        .lightLevel(15).density(3000).viscosity(6000).temperature(1300)
-                        .canConvertToSource(false)
-                        .descriptionId("fluid." + MOD_ID + ".metal.solder")
-                ));
+                () -> FluidRegistrationHelper.createMoltenFluidType("fluid." + MOD_ID + ".metal.solder"));
 
         // 2. 数组引用 — 解决 Properties ↔ Fluid 循环依赖
         BaseFlowingFluid.Properties[] propsRef = new BaseFlowingFluid.Properties[1];
@@ -87,15 +79,13 @@ public class SolderMetal {
         INGOT = ITEMS.register(INGOT_ID,
                 () -> new Item(new Item.Properties()));
         BUCKET = ITEMS.register(BUCKET_ID,
-                () -> new com.yukimods.alloyext.item.SafeBucketItem(
+                () -> new BucketItem(
                         sourceHolder.get(), new Item.Properties().stacksTo(1)));
 
-        // 6. Properties — bucket 指向桶物品（与 TFC 金属注册模式一致）
+        // 6. Properties
         propsRef[0] = new BaseFlowingFluid.Properties(FLUID_TYPE, sourceHolder, flowingHolder)
-                .block(FLUID_BLOCK)
-                .bucket(BUCKET)
-                .slopeFindDistance(4)
-                .tickRate(30);
+                .block(FLUID_BLOCK).bucket(BUCKET);
+        FluidRegistrationHelper.configureMoltenProperties(propsRef[0]);
 
         // 7. FluidHolder
         @SuppressWarnings({"rawtypes", "unchecked"})

@@ -1,0 +1,1 @@
+{"type":"tfc:heating","ingredient":{"type":"neoforge:components","items":["firmalife:metal/ingot/chromium"],"components":{"tfc_alloy_ext:inferior_origin":{"base_metal":"chromium"}}},"result_fluid":{"amount":100,"id":"tfc_alloy_ext:metal/inferior_chromium"},"temperature":1188.0}

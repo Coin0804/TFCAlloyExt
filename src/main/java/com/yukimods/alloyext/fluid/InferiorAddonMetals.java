@@ -1,18 +1,16 @@
 package com.yukimods.alloyext.fluid;
 
-import com.yukimods.alloyext.item.SafeBucketItem;
+import com.yukimods.alloyext.util.FluidRegistrationHelper;
 import net.dries007.tfc.common.blocks.MoltenFluidBlock;
 import net.dries007.tfc.common.fluids.FluidHolder;
 import net.dries007.tfc.common.fluids.MoltenFluid;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraft.world.level.pathfinder.PathType;
-import net.neoforged.neoforge.common.SoundActions;
 import net.neoforged.neoforge.fluids.BaseFlowingFluid;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.registries.DeferredHolder;
@@ -78,7 +76,7 @@ public class InferiorAddonMetals {
             DeferredRegister.create(Registries.ITEM, MOD_ID);
 
     private static final BlockBehaviour.Properties FLUID_BLOCK_PROPS = BlockBehaviour.Properties.of()
-            .liquid().noCollission().strength(100f).noLootTable();
+            .liquid().noCollission().strength(100f).noLootTable().replaceable();
 
     // ─── 注册结果 ──────────────────────────────────────────
 
@@ -117,14 +115,8 @@ public class InferiorAddonMetals {
 
         // 1. FluidType
         var typeHolder = FLUID_TYPES.register(fluidId,
-                () -> new FluidType(FluidType.Properties.create()
-                        .adjacentPathType(PathType.LAVA)
-                        .sound(SoundActions.BUCKET_FILL, SoundEvents.BUCKET_FILL)
-                        .sound(SoundActions.BUCKET_EMPTY, SoundEvents.BUCKET_EMPTY_LAVA)
-                        .lightLevel(15).density(3000).viscosity(6000).temperature(1300)
-                        .canConvertToSource(false)
-                        .descriptionId("fluid." + MOD_ID + ".metal.inferior_" + metal.name())
-                ));
+                () -> FluidRegistrationHelper.createMoltenFluidType(
+                        "fluid." + MOD_ID + ".metal.inferior_" + metal.name()));
 
         // 2. 数组引用
         BaseFlowingFluid.Properties[] propsRef = new BaseFlowingFluid.Properties[1];
@@ -140,18 +132,16 @@ public class InferiorAddonMetals {
                 () -> new MoltenFluidBlock(flowingHolder, FLUID_BLOCK_PROPS));
         BLOCK_MAP.put(metal.name(), blockHolder);
 
-        // 5. 桶物品 — 与 ModItems 一致的 SafeBucketItem 模式
+        // 5. 桶物品 — 与 ModItems 一致的 BucketItem 模式
         String bucketId = "inferior_" + metal.name() + "_bucket";
         var bucketHolder = ITEMS.register(bucketId,
-                () -> new SafeBucketItem(sourceHolder.get(), new Item.Properties().stacksTo(1)));
+                () -> new BucketItem(sourceHolder.get(), new Item.Properties().stacksTo(1)));
         BUCKET_MAP.put(metal.name(), bucketHolder);
 
-        // 6. Properties — bucket 指向刚才注册的桶物品
+        // 6. Properties
         propsRef[0] = new BaseFlowingFluid.Properties(typeHolder, sourceHolder, flowingHolder)
-                .block(blockHolder)
-                .bucket(bucketHolder)  // DeferredHolder implements Supplier
-                .slopeFindDistance(4)
-                .tickRate(30);
+                .block(blockHolder).bucket(bucketHolder);
+        FluidRegistrationHelper.configureMoltenProperties(propsRef[0]);
 
         // 7. FluidHolder
         @SuppressWarnings({"rawtypes", "unchecked"})
