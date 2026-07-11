@@ -4,9 +4,11 @@ import com.yukimods.alloyext.InferiorMetal;
 import net.dries007.tfc.common.blocks.MoltenFluidBlock;
 import net.dries007.tfc.common.fluids.FluidHolder;
 import net.dries007.tfc.common.fluids.MoltenFluid;
+import com.yukimods.alloyext.item.SafeBucketItem;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.Fluid;
@@ -41,6 +43,8 @@ public class InferiorMetalFluids {
             DeferredRegister.create(Registries.FLUID, MOD_ID);
     public static final DeferredRegister<Block> BLOCKS =
             DeferredRegister.create(Registries.BLOCK, MOD_ID);
+    public static final DeferredRegister<Item> ITEMS =
+            DeferredRegister.create(Registries.ITEM, MOD_ID);
 
     private static final BlockBehaviour.Properties FLUID_BLOCK_PROPS = BlockBehaviour.Properties.of()
             .liquid().noCollission().strength(100f).noLootTable();
@@ -49,6 +53,7 @@ public class InferiorMetalFluids {
 
     private static final Map<String, FluidHolder<BaseFlowingFluid>> FLUID_MAP = new LinkedHashMap<>();
     private static final Map<String, DeferredHolder<Block, MoltenFluidBlock>> BLOCK_MAP = new LinkedHashMap<>();
+    private static final Map<String, DeferredHolder<Item, ? extends Item>> BUCKET_MAP = new LinkedHashMap<>();
 
     // ─── 流体：静态初始化时依次注册 ────────────────────────
 
@@ -60,7 +65,7 @@ public class InferiorMetalFluids {
     public static final FluidHolder<BaseFlowingFluid> INFERIOR_SILVER  = register(InferiorMetal.SILVER);
     public static final FluidHolder<BaseFlowingFluid> INFERIOR_NICKEL  = register(InferiorMetal.NICKEL);
 
-    // ─── 方块：从已填充的 BLOCK_MAP 取出，类型安全 ─────────
+    // ─── 方块 ──────────────────────────────────────────
 
     public static final DeferredHolder<Block, MoltenFluidBlock> INFERIOR_COPPER_BLOCK  = getBlock("copper");
     public static final DeferredHolder<Block, MoltenFluidBlock> INFERIOR_TIN_BLOCK     = getBlock("tin");
@@ -70,9 +75,24 @@ public class InferiorMetalFluids {
     public static final DeferredHolder<Block, MoltenFluidBlock> INFERIOR_SILVER_BLOCK  = getBlock("silver");
     public static final DeferredHolder<Block, MoltenFluidBlock> INFERIOR_NICKEL_BLOCK  = getBlock("nickel");
 
+    // ─── 桶物品 ────────────────────────────────────────
+
+    public static final DeferredHolder<Item, Item> INFERIOR_COPPER_BUCKET  = getBucket("copper");
+    public static final DeferredHolder<Item, Item> INFERIOR_TIN_BUCKET     = getBucket("tin");
+    public static final DeferredHolder<Item, Item> INFERIOR_ZINC_BUCKET    = getBucket("zinc");
+    public static final DeferredHolder<Item, Item> INFERIOR_BISMUTH_BUCKET = getBucket("bismuth");
+    public static final DeferredHolder<Item, Item> INFERIOR_GOLD_BUCKET    = getBucket("gold");
+    public static final DeferredHolder<Item, Item> INFERIOR_SILVER_BUCKET  = getBucket("silver");
+    public static final DeferredHolder<Item, Item> INFERIOR_NICKEL_BUCKET  = getBucket("nickel");
+
     @SuppressWarnings("unchecked")
     private static <T extends Block> DeferredHolder<Block, T> getBlock(String name) {
         return (DeferredHolder<Block, T>) BLOCK_MAP.get(name);
+    }
+
+    @SuppressWarnings("unchecked")
+    private static <T extends Item> DeferredHolder<Item, T> getBucket(String name) {
+        return (DeferredHolder<Item, T>) BUCKET_MAP.get(name);
     }
 
     // ─── 注册逻辑 ──────────────────────────────────────────
@@ -118,14 +138,21 @@ public class InferiorMetalFluids {
                 () -> new MoltenFluidBlock(flowingHolder, FLUID_BLOCK_PROPS));
         BLOCK_MAP.put(metal.getName(), blockHolder);
 
-        // 5. Properties — 所有 Supplier 各就各位，最后写入数组
+        // 5. 桶物品 — SafeBucketItem（禁用放置交互）
+        var bucketHolder = ITEMS.register(metal.getBucketId(),
+                () -> new SafeBucketItem(sourceHolder.get(), new Item.Properties().stacksTo(1)));
+        @SuppressWarnings({"rawtypes", "unchecked"})
+        var bucketEntry = (DeferredHolder<Item, ? extends Item>) (DeferredHolder<?, ?>) bucketHolder;
+        BUCKET_MAP.put(metal.getName(), bucketEntry);
+
+        // 6. Properties — bucket 指向桶物品（与 TFC 金属注册模式一致）
         propsRef[0] = new BaseFlowingFluid.Properties(typeHolder, sourceHolder, flowingHolder)
                 .block(blockHolder)
-                .bucket(() -> null)
+                .bucket(bucketHolder)
                 .slopeFindDistance(4)
                 .tickRate(30);
 
-        // 6. 组装 FluidHolder
+        // 7. FluidHolder
         @SuppressWarnings({"rawtypes", "unchecked"})
         FluidHolder<BaseFlowingFluid> holder = new FluidHolder(typeHolder, flowingHolder, sourceHolder);
         FLUID_MAP.put(metal.getName(), holder);

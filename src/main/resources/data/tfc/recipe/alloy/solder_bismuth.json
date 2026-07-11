@@ -1,0 +1,1 @@
+{"type":"tfc:alloy","contents":[{"fluid":"tfc:metal/tin","max":0.75,"min":0.50},{"fluid":"tfc:metal/bismuth","max":0.50,"min":0.25}],"result":"tfc_alloy_ext:metal/solder"}

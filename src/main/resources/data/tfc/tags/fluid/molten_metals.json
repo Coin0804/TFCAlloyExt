@@ -6,6 +6,10 @@
     "tfc_alloy_ext:metal/inferior_bismuth",
     "tfc_alloy_ext:metal/inferior_gold",
     "tfc_alloy_ext:metal/inferior_silver",
-    "tfc_alloy_ext:metal/inferior_nickel"
+    "tfc_alloy_ext:metal/inferior_nickel",
+    "tfc_alloy_ext:metal/inferior_aluminum",
+    "tfc_alloy_ext:metal/inferior_lead",
+    "tfc_alloy_ext:metal/inferior_uranium",
+    "tfc_alloy_ext:metal/solder"
   ]
 }

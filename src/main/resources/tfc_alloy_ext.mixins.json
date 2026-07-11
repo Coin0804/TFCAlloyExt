@@ -2,6 +2,7 @@
     "required": true,
     "package": "com.yukimods.alloyext.mixin",
     "compatibilityLevel": "JAVA_21",
+    "plugin": "com.yukimods.alloyext.mixin.TFCAlloyExtMixinPlugin",
     "mixins": [
         "FluidAlloyMixin",
         "FoundryTapMixin",

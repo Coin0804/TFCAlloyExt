@@ -1,7 +1,8 @@
 package com.yukimods.alloyext;
 
+import com.yukimods.alloyext.fluid.InferiorAddonMetals;
 import com.yukimods.alloyext.fluid.InferiorMetalFluids;
-import com.yukimods.alloyext.item.ModItems;
+import com.yukimods.alloyext.metal.SolderMetal;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.Registries;
 import net.neoforged.bus.api.IEventBus;
@@ -15,8 +16,10 @@ import org.slf4j.LoggerFactory;
 /**
  * 群峦合金扩展 —— 主类。
  * <ul>
- *   <li>7 种熔融劣等合金流体 + 方块 + 合金锭</li>
- *   <li>55% 阈值 / 污染扩散 / 黑箱沉没 合金逻辑</li>
+ *   <li>7 种熔融劣等合金流体 + 方块</li>
+ *   <li>3 种 IE Addon 劣等金属（铝/铅/铀，需 tfc_ie_addon）</li>
+ *   <li>可配置阈值（默认75%）/ 污染扩散 / 黑箱沉没 合金逻辑</li>
+ *   <li>焊锡金属（Sn-Pb-Bi 合金，非劣等）</li>
  *   <li>PM 熔铸炉 TFC 集成（Mixin，可选依赖）</li>
  *   <li>劣等合金配方替代（DataComponent 标记）</li>
  * </ul>
@@ -45,15 +48,30 @@ public class TFCAlloyExt {
 
         DATA_COMPONENTS.register(modEventBus);
 
-        // 先触发 InferiorMetalFluids 类加载（ModBlocks 依赖其 BLOCKS DeferredRegister）
+        // TFC 劣等合金（7 种，始终注册）
         InferiorMetalFluids.FLUID_TYPES.register(modEventBus);
         InferiorMetalFluids.FLUIDS.register(modEventBus);
         InferiorMetalFluids.BLOCKS.register(modEventBus);
+        InferiorMetalFluids.ITEMS.register(modEventBus);
 
-        // ModBlocks.BLOCKS 是 InferiorMetalFluids.BLOCKS 的别名，无需重复注册
-        ModItems.ITEMS.register(modEventBus);
+        // IE Addon 劣等合金（3 种：铝/铅/铀，仅当 tfc_ie_addon 存在时注册）
+        if (InferiorAddonMetals.isEnabled()) {
+            InferiorAddonMetals.FLUID_TYPES.register(modEventBus);
+            InferiorAddonMetals.FLUIDS.register(modEventBus);
+            InferiorAddonMetals.BLOCKS.register(modEventBus);
+            InferiorAddonMetals.ITEMS.register(modEventBus);
+            LOGGER.info("已激活 IE Addon 劣等金属：铝、铅、铀");
+        }
+
+        // 焊锡金属 — 非劣等合金
+        SolderMetal.FLUID_TYPES.register(modEventBus);
+        SolderMetal.FLUIDS.register(modEventBus);
+        SolderMetal.BLOCKS.register(modEventBus);
+        SolderMetal.ITEMS.register(modEventBus);
+
+        // ModItems 目前无物品（桶已迁移至各流体注册类），保留占位
         ModCreativeTab.CREATIVE_TABS.register(modEventBus);
 
-        LOGGER.info("已注册 7 种熔融劣等合金流体 + 7 种合金锭 + 7 种流体桶 + 液体方块 + 劣等溯源组件");
+        LOGGER.info("已注册 7+3 种熔融劣等合金流体 + 焊锡金属 + 7 种流体桶 + 液体方块 + 劣等溯源组件");
     }
 }

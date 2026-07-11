@@ -6,6 +6,11 @@
   "fluid.tfc_alloy_ext.metal.inferior_gold": "Molten Inferior Gold Alloy",
   "fluid.tfc_alloy_ext.metal.inferior_silver": "Molten Inferior Silver Alloy",
   "fluid.tfc_alloy_ext.metal.inferior_nickel": "Molten Inferior Nickel Alloy",
+  "fluid.tfc_alloy_ext.metal.inferior_aluminum": "Molten Inferior Aluminum Alloy",
+  "fluid.tfc_alloy_ext.metal.inferior_lead": "Molten Inferior Lead Alloy",
+  "fluid.tfc_alloy_ext.metal.inferior_uranium": "Molten Inferior Uranium Alloy",
+
+  "fluid.tfc_alloy_ext.metal.solder": "Molten Solder",
 
   "item.tfc_alloy_ext.inferior_copper_ingot": "Inferior Copper Alloy Ingot",
   "item.tfc_alloy_ext.inferior_tin_ingot": "Inferior Tin Alloy Ingot",
@@ -22,6 +27,12 @@
   "item.tfc_alloy_ext.inferior_gold_bucket": "Molten Inferior Gold Alloy Bucket",
   "item.tfc_alloy_ext.inferior_silver_bucket": "Molten Inferior Silver Alloy Bucket",
   "item.tfc_alloy_ext.inferior_nickel_bucket": "Molten Inferior Nickel Alloy Bucket",
+  "item.tfc_alloy_ext.inferior_aluminum_bucket": "Molten Inferior Aluminum Alloy Bucket",
+  "item.tfc_alloy_ext.inferior_lead_bucket": "Molten Inferior Lead Alloy Bucket",
+  "item.tfc_alloy_ext.inferior_uranium_bucket": "Molten Inferior Uranium Alloy Bucket",
+
+  "item.tfc_alloy_ext.metal.ingot.solder": "Solder Ingot",
+  "item.tfc_alloy_ext.metal.solder_bucket": "Molten Solder Bucket",
 
   "itemGroup.tfc_alloy_ext": "TFC Alloy Extension"
 }

@@ -6,6 +6,11 @@
   "fluid.tfc_alloy_ext.metal.inferior_gold": "熔融劣等金合金",
   "fluid.tfc_alloy_ext.metal.inferior_silver": "熔融劣等银合金",
   "fluid.tfc_alloy_ext.metal.inferior_nickel": "熔融劣等镍合金",
+  "fluid.tfc_alloy_ext.metal.inferior_aluminum": "熔融劣等铝合金",
+  "fluid.tfc_alloy_ext.metal.inferior_lead": "熔融劣等铅合金",
+  "fluid.tfc_alloy_ext.metal.inferior_uranium": "熔融劣等铀合金",
+
+  "fluid.tfc_alloy_ext.metal.solder": "熔融焊锡",
 
   "item.tfc_alloy_ext.inferior_copper_bucket": "熔融劣等铜合金桶",
   "item.tfc_alloy_ext.inferior_tin_bucket": "熔融劣等锡合金桶",
@@ -14,6 +19,12 @@
   "item.tfc_alloy_ext.inferior_gold_bucket": "熔融劣等金合金桶",
   "item.tfc_alloy_ext.inferior_silver_bucket": "熔融劣等银合金桶",
   "item.tfc_alloy_ext.inferior_nickel_bucket": "熔融劣等镍合金桶",
+  "item.tfc_alloy_ext.inferior_aluminum_bucket": "熔融劣等铝合金桶",
+  "item.tfc_alloy_ext.inferior_lead_bucket": "熔融劣等铅合金桶",
+  "item.tfc_alloy_ext.inferior_uranium_bucket": "熔融劣等铀合金桶",
+
+  "item.tfc_alloy_ext.metal.ingot.solder": "焊锡锭",
+  "item.tfc_alloy_ext.metal.solder_bucket": "熔融焊锡桶",
 
   "itemGroup.tfc_alloy_ext": "群峦合金扩展",
   "component.tfc_alloy_ext.inferior_origin": "劣等合金"

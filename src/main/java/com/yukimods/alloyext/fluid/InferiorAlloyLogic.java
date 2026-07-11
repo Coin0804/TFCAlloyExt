@@ -1,13 +1,16 @@
 package com.yukimods.alloyext.fluid;
 
 import com.yukimods.alloyext.InferiorMetal;
+import com.yukimods.alloyext.ModConfig;
 import it.unimi.dsi.fastutil.objects.Object2DoubleMap;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.Nullable;
 
+import net.dries007.tfc.common.fluids.FluidHolder;
 import net.dries007.tfc.util.FluidAlloy;
+import net.neoforged.neoforge.fluids.BaseFlowingFluid;
 
 import java.util.*;
 
@@ -44,11 +47,16 @@ public class InferiorAlloyLogic {
             Fluid fluid = entry.getKey();
             double amount = entry.getDoubleValue();
 
-            if (InferiorMetalFluids.isInferiorFluid(fluid)) {
+            if (InferiorMetalFluids.isInferiorFluid(fluid) ||
+                    InferiorAddonMetals.isInferiorAddonFluid(fluid)) {
                 inferiorFluids.add(fluid);
             } else {
                 String metalName = extractPureMetalName(fluid);
-                if (metalName != null && PURE_METALS.contains(metalName)) {
+                if (metalName == null) {
+                    metalName = InferiorAddonMetals.extractAddonPureMetalName(fluid);
+                }
+                if (metalName != null && (PURE_METALS.contains(metalName) ||
+                        InferiorAddonMetals.PURE_METAL_NAMES.contains(metalName))) {
                     pureAmounts.merge(metalName, amount, Double::sum);
                 } else {
                     // 非目标金属（水、TFC合金流体等）→ 保持 UNKNOWN
@@ -61,10 +69,10 @@ public class InferiorAlloyLogic {
         if (!inferiorFluids.isEmpty()) {
             // 劣等X合金 + 同族纯X → 更多劣等X合金（污染扩散）
             if (inferiorFluids.size() == 1 && pureAmounts.size() == 1) {
-                String infMetal = InferiorMetalFluids.getBaseMetalFromInferior(inferiorFluids.get(0));
+                String infMetal = getBaseMetalFromAnyInferior(inferiorFluids.get(0));
                 String pureMetal = pureAmounts.keySet().iterator().next();
                 if (infMetal != null && infMetal.equals(pureMetal)) {
-                    var holder = InferiorMetalFluids.getInferiorFluid(infMetal);
+                    var holder = getInferiorFluidHolder(infMetal);
                     if (holder != null) return new FluidStack(holder.getSource(), total);
                 }
             }
@@ -72,7 +80,7 @@ public class InferiorAlloyLogic {
             return null;
         }
 
-        // ── 第三步：55% 阈值（全纯金属混合物）─────────────
+        // ── 第三步：阈值判定（全纯金属混合物）─────────────
         String dominant = null;
         double maxAmount = 0;
         for (var entry : pureAmounts.entrySet()) {
@@ -82,12 +90,12 @@ public class InferiorAlloyLogic {
             }
         }
 
-        if (dominant != null && maxAmount / total >= 0.55) {
-            var holder = InferiorMetalFluids.getInferiorFluid(dominant);
+        if (dominant != null && maxAmount / total >= ModConfig.INFERIOR_ALLOY_THRESHOLD.get()) {
+            var holder = getInferiorFluidHolder(dominant);
             if (holder != null) return new FluidStack(holder.getSource(), total);
         }
 
-        // < 55% → UNKNOWN（不变）
+        // 低于阈值 → UNKNOWN（不变）
         return null;
     }
 
@@ -105,5 +113,20 @@ public class InferiorAlloyLogic {
             return name.equals("unknown") ? null : name;
         }
         return null;
+    }
+
+    /** 从 TFC 或 IE Addon 劣等流体中提取基础金属名 */
+    @Nullable
+    private static String getBaseMetalFromAnyInferior(Fluid fluid) {
+        String name = InferiorMetalFluids.getBaseMetalFromInferior(fluid);
+        return name != null ? name : InferiorAddonMetals.getBaseMetalFromInferior(fluid);
+    }
+
+    /** 查找劣等 FluidHolder（先查 TFC，再查 IE Addon） */
+    @Nullable
+    private static FluidHolder<BaseFlowingFluid> getInferiorFluidHolder(String baseMetal) {
+        var holder = InferiorMetalFluids.getInferiorFluid(baseMetal);
+        if (holder != null) return holder;
+        return InferiorAddonMetals.getFluid(baseMetal);
     }
 }
