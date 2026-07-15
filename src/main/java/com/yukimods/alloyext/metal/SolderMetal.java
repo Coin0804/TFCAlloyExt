@@ -31,7 +31,7 @@ public class SolderMetal {
     public static final String METAL_NAME = "solder";
     public static final String FLUID_ID = "metal/solder";
     public static final String FLOWING_FLUID_ID = "metal/flowing_solder";
-    public static final String BLOCK_ID = "metal/solder";
+    public static final String BLOCK_ID = "fluid/metal/solder";
     public static final String BUCKET_ID = "metal/solder_bucket";
     public static final String INGOT_ID = "metal/ingot/solder";
 
