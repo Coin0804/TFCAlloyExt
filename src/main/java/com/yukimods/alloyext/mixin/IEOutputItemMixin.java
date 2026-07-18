@@ -20,6 +20,7 @@ public abstract class IEOutputItemMixin {
 
     private static final Logger LOG = LoggerFactory.getLogger("TFCAlloyExt:IE");
 
+    @SuppressWarnings("rawtypes")
     @Inject(method = "outputItem(Lblusunrize/immersiveengineering/common/blocks/multiblocks/process/ProcessContext$ProcessContextInWorld;Lnet/minecraft/world/item/ItemStack;Lblusunrize/immersiveengineering/api/multiblocks/blocks/env/IMultiblockLevel;)V",
             at = @At("HEAD"))
     private void propagateOrigin(ProcessContext.ProcessContextInWorld ctx, ItemStack output,

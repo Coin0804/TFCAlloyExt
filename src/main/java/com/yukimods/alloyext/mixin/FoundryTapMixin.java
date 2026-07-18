@@ -9,7 +9,6 @@ import org.spongepowered.asm.mixin.Mixin;
  * 在龙头浇铸前，读取熔铸炉 MultiFluidTank 中的 TFC 金属流体，
  * 通过 InferiorAlloyLogic 判定是否应替换为劣等合金/正常合金。
  * <p>
- * TODO: 需要在 IDEA 中反编译 FoundryTapBlockEntity.serverTick 完整逻辑后确定具体注入位置。
  *       当前仅做类引用占位，避免编译错误。
  */
 @Mixin(value = FoundryTapBlockEntity.class, remap = false)

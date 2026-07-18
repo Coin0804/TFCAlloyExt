@@ -133,7 +133,7 @@ public class InferiorMetalFluids {
         // 5. 桶物品 — SafeBucketItem（禁用放置交互）
         var bucketHolder = ITEMS.register(metal.getBucketId(),
                 () -> new BucketItem(sourceHolder.get(), new Item.Properties().stacksTo(1)));
-        @SuppressWarnings({"rawtypes", "unchecked"})
+        @SuppressWarnings({"unchecked"})
         var bucketEntry = (DeferredHolder<Item, ? extends Item>) (DeferredHolder<?, ?>) bucketHolder;
         BUCKET_MAP.put(metal.getName(), bucketEntry);
 

@@ -108,7 +108,7 @@ public class InferiorFirmalifeMetals {
         // 5. 桶物品
         var bucketHolder = ITEMS.register(bucketId,
                 () -> new BucketItem(sourceHolder.get(), new Item.Properties().stacksTo(1)));
-        @SuppressWarnings({"rawtypes", "unchecked"})
+        @SuppressWarnings({"unchecked"})
         var bucketEntry = (DeferredHolder<Item, ? extends Item>) (DeferredHolder<?, ?>) bucketHolder;
         BUCKET_MAP.put(metal.name(), bucketEntry);
 

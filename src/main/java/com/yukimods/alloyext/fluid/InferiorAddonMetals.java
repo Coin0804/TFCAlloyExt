@@ -17,8 +17,6 @@ import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
 import org.jetbrains.annotations.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
@@ -35,7 +33,6 @@ import static com.yukimods.alloyext.TFCAlloyExt.MOD_ID;
  */
 public class InferiorAddonMetals {
 
-    private static final Logger LOG = LoggerFactory.getLogger("TFCAlloyExt:Addon");
 
     /** tfc_ie_addon 的 mod ID */
     public static final String ADDON_MOD_ID = "tfc_ie_addon";
