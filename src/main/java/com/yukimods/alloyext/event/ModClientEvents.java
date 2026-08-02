@@ -1,5 +1,7 @@
-package com.yukimods.alloyext;
+package com.yukimods.alloyext.event;
 
+import com.yukimods.alloyext.TFCAlloyExt;
+import com.yukimods.alloyext.metal.InferiorOrigin;
 import net.minecraft.network.chat.Component;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;

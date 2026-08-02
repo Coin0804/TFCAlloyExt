@@ -1,9 +1,10 @@
 package com.yukimods.alloyext.mixin;
 
+import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockLevel;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcessInWorld;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.ProcessContext;
-import com.yukimods.alloyext.InferiorOrigin;
 import com.yukimods.alloyext.TFCAlloyExt;
+import com.yukimods.alloyext.metal.InferiorOrigin;
 import net.minecraft.world.item.ItemStack;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,7 +25,7 @@ public abstract class IEOutputItemMixin {
     @Inject(method = "outputItem(Lblusunrize/immersiveengineering/common/blocks/multiblocks/process/ProcessContext$ProcessContextInWorld;Lnet/minecraft/world/item/ItemStack;Lblusunrize/immersiveengineering/api/multiblocks/blocks/env/IMultiblockLevel;)V",
             at = @At("HEAD"))
     private void propagateOrigin(ProcessContext.ProcessContextInWorld ctx, ItemStack output,
-                                  blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockLevel level,
+                                  IMultiblockLevel level,
                                   CallbackInfo ci) {
         if (output.isEmpty()) return;
         MultiblockProcessInWorld<?> self = (MultiblockProcessInWorld<?>) (Object) this;

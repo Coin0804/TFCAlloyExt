@@ -1,16 +1,13 @@
-package com.yukimods.alloyext.fluid;
+package com.yukimods.alloyext.metal;
 
-import com.yukimods.alloyext.util.FluidRegistrationHelper;
 import net.dries007.tfc.common.blocks.MoltenFluidBlock;
 import net.dries007.tfc.common.fluids.FluidHolder;
-import net.dries007.tfc.common.fluids.MoltenFluid;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.Fluid;
+import net.neoforged.fml.ModList;
 import net.neoforged.neoforge.fluids.BaseFlowingFluid;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.registries.DeferredHolder;
@@ -18,7 +15,11 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.Map;
+import java.util.Set;
 
 import static com.yukimods.alloyext.TFCAlloyExt.MOD_ID;
 
@@ -28,14 +29,23 @@ import static com.yukimods.alloyext.TFCAlloyExt.MOD_ID;
  * 仅在 {@code firmalife} 模组已安装时激活。
  * 纯金属流体来自 {@code firmalife:metal/chromium}。
  * 不锈钢是合金，不产生劣等变体。
+ * <p>
+ * 注册逻辑委托 {@link MetalRegistration#registerInferior}，与 {@link InferiorMetalFluids} 相同模式。
  */
 public class InferiorFirmalifeMetals {
 
     public static final String ADDON_MOD_ID = "firmalife";
 
     // ─── 元数据 ──────────────────────────────────────────
+    // (name, meltingTemp°C, 流体颜色ARGB, 纯流体ID)
+    // meltingTemp 与 data/tfc/tfc/fluid_heat/inferior_chromium.json 的 melt_temperature 对应（单一数据源）
 
-    record FirmalifeMetal(String name, int meltingTemp, int color, String pureFluidId) {}
+    public record FirmalifeMetal(
+            String name,
+            int meltingTemp,
+            int color,
+            String pureFluidId
+    ) {}
 
     // Chromium: 1250°C * 0.95 = 1187.5 → 1188; color -0x0F0F0F from 0xF5F6FF → 0xE6E7F0
     public static final FirmalifeMetal CHROMIUM = new FirmalifeMetal("chromium", 1188, 0xFFE6E7F0, "firmalife:metal/chromium");
@@ -53,9 +63,6 @@ public class InferiorFirmalifeMetals {
             DeferredRegister.create(Registries.BLOCK, MOD_ID);
     public static final DeferredRegister<Item> ITEMS =
             DeferredRegister.create(Registries.ITEM, MOD_ID);
-
-    private static final BlockBehaviour.Properties FLUID_BLOCK_PROPS = BlockBehaviour.Properties.of()
-            .liquid().noCollission().strength(100f).noLootTable().replaceable();
 
     // ─── 注册结果 ──────────────────────────────────────────
 
@@ -81,53 +88,18 @@ public class InferiorFirmalifeMetals {
     // ─── 注册逻辑 ──────────────────────────────────────────
 
     private static FluidHolder<BaseFlowingFluid> register(FirmalifeMetal metal) {
-        String fluidId = "metal/inferior_" + metal.name();
-        String flowingId = "metal/flowing_inferior_" + metal.name();
-        String blockId = "fluid/metal/inferior_" + metal.name();
-        String bucketId = "inferior_" + metal.name() + "_bucket";
-
-        // 1. FluidType
-        var typeHolder = FLUID_TYPES.register(fluidId,
-                () -> FluidRegistrationHelper.createMoltenFluidType(
-                        "fluid." + MOD_ID + ".metal.inferior_" + metal.name()));
-
-        // 2. 数组引用
-        BaseFlowingFluid.Properties[] propsRef = new BaseFlowingFluid.Properties[1];
-
-        // 3. Source + Flowing
-        var sourceHolder = FLUIDS.register(fluidId,
-                () -> new MoltenFluid.Source(propsRef[0]));
-        var flowingHolder = FLUIDS.register(flowingId,
-                () -> new MoltenFluid.Flowing(propsRef[0]));
-
-        // 4. Block
-        var blockHolder = BLOCKS.register(blockId,
-                () -> new MoltenFluidBlock(flowingHolder, FLUID_BLOCK_PROPS));
-        BLOCK_MAP.put(metal.name(), blockHolder);
-
-        // 5. 桶物品
-        var bucketHolder = ITEMS.register(bucketId,
-                () -> new BucketItem(sourceHolder.get(), new Item.Properties().stacksTo(1)));
-        @SuppressWarnings({"unchecked"})
-        var bucketEntry = (DeferredHolder<Item, ? extends Item>) (DeferredHolder<?, ?>) bucketHolder;
-        BUCKET_MAP.put(metal.name(), bucketEntry);
-
-        // 6. Properties
-        propsRef[0] = new BaseFlowingFluid.Properties(typeHolder, sourceHolder, flowingHolder)
-                .block(blockHolder).bucket(bucketEntry);
-        FluidRegistrationHelper.configureMoltenProperties(propsRef[0]);
-
-        // 7. FluidHolder
-        @SuppressWarnings({"rawtypes", "unchecked"})
-        FluidHolder<BaseFlowingFluid> holder = new FluidHolder(typeHolder, flowingHolder, sourceHolder);
-        FLUID_MAP.put(metal.name(), holder);
-        return holder;
+        MetalRegistration.Result result = MetalRegistration.registerInferior(
+                FLUID_TYPES, FLUIDS, BLOCKS, ITEMS, metal.name());
+        FLUID_MAP.put(metal.name(), result.fluid());
+        BLOCK_MAP.put(metal.name(), result.block());
+        BUCKET_MAP.put(metal.name(), result.bucket());
+        return result.fluid();
     }
 
     // ─── 工具方法 ──────────────────────────────────────────
 
     public static boolean isEnabled() {
-        return net.neoforged.fml.ModList.get().isLoaded(ADDON_MOD_ID);
+        return ModList.get().isLoaded(ADDON_MOD_ID);
     }
 
     @Nullable
@@ -139,26 +111,13 @@ public class InferiorFirmalifeMetals {
         return getBaseMetalFromInferior(fluid) != null;
     }
 
+    /** 反向查找：Fluid → Firmalife 基础金属名（白名单过滤） */
     @Nullable
     public static String getBaseMetalFromInferior(Fluid fluid) {
-        var key = BuiltInRegistries.FLUID.getKey(fluid);
-        if (key == null || !MOD_ID.equals(key.getNamespace())) return null;
-        String path = key.getPath();
-        if (path.startsWith("metal/inferior_")) {
-            int start = "metal/inferior_".length();
-            int end = path.indexOf('/', start);
-            String name = end < 0 ? path.substring(start) : path.substring(start, end);
-            return PURE_METAL_NAMES.contains(name) ? name : null;
-        }
-        if (path.startsWith("metal/flowing_inferior_")) {
-            int start = "metal/flowing_inferior_".length();
-            int end = path.indexOf('/', start);
-            String name = end < 0 ? path.substring(start) : path.substring(start, end);
-            return PURE_METAL_NAMES.contains(name) ? name : null;
-        }
-        return null;
+        return MetalRegistration.getBaseMetalFromInferior(fluid, PURE_METAL_NAMES);
     }
 
+    /** 从 {@code firmalife:metal/xxx} 流体提取纯金属名称（非劣等），仅匹配铬 */
     @Nullable
     public static String extractFirmalifePureMetalName(Fluid fluid) {
         if (!isEnabled()) return null;

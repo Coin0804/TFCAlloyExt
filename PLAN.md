@@ -18,16 +18,33 @@
 
 ```
 src/main/
-├── java/com/xxx/modid/
-│   ├── ModMain.java                    # 主类 + 注册总线
-│   ├── fluid/
-│   │   ├── InferiorMetalFluids.java    # 7 种熔融劣等合金流体注册
-│   │   └── InferiorAlloyLogic.java     # 55%阈值 + 污染扩散 + 黑箱
-│   ├── item/
-│   │   └── ModItems.java              # 7 种劣等合金锭注册
-│   └── mixin/
+├── java/com/yukimods/alloyext/
+│   ├── TFCAlloyExt.java                # 主类 + 注册总线
+│   ├── config/
+│   │   └── ModConfig.java              # 坩埚倾倒倍率 / 劣等阈值 / 铁劣等开关
+│   ├── metal/                          # 金属体系（单一数据源：枚举/record 元数据 ↔ JSON）
+│   │   ├── MetalRegistration.java      # 共享注册器：registerRegular / registerInferior
+│   │   ├── InferiorMetal.java          # 7 种劣等金属枚举（名称/熔点/颜色）
+│   │   ├── InferiorOrigin.java         # DataComponent 溯源组件
+│   │   ├── InferiorMetalFluids.java    # 7 种熔融劣等合金流体注册（委托 registerInferior）
+│   │   ├── InferiorAddonMetals.java    # IE Addon 3 种（铝/铅/铀，条件注册）
+│   │   ├── InferiorFirmalifeMetals.java# Firmalife 1 种（铬，条件注册）
+│   │   ├── SolderMetal.java            # 焊锡（委托 registerRegular，含锭）
+│   │   ├── InferiorAlloyLogic.java     # 阈值 + 污染扩散 + 黑箱 合金判定
+│   │   └── AlloyTypicalRatios.java     # 已知合金典型比例分解表
+│   ├── event/
+│   │   ├── ModEvents.java              # 合成产物继承 InferiorOrigin
+│   │   └── ModClientEvents.java        # 劣等合金 tooltip
+│   ├── client/
+│   │   ├── ModClientSetup.java         # 流体颜色扩展 + 桶 ItemColor
+│   │   └── ModCreativeTab.java         # 创造标签页
+│   ├── util/
+│   │   ├── InferiorMetalHelper.java    # Mixin 共用识别工具
+│   │   └── FluidRegistrationHelper.java# 熔融流体属性工具
+│   └── mixin/                          # TFC / IE / PM 条件注入
 │       ├── FluidAlloyMixin.java        # [A] TFC getResult() 注入劣等逻辑
-│       └── FoundryTapMixin.java        # [B] PM 龙头 TFC 合金
+│       ├── FoundryTapMixin.java        # [B] PM 龙头 TFC 合金（占位）
+│       └── ...（其余 TFC/IE mixin）
 │
 └── resources/
     ├── modid.mixins.json

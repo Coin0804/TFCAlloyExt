@@ -1,8 +1,9 @@
-package com.yukimods.alloyext;
+package com.yukimods.alloyext.client;
 
-import com.yukimods.alloyext.fluid.InferiorAddonMetals;
-import com.yukimods.alloyext.fluid.InferiorFirmalifeMetals;
-import com.yukimods.alloyext.fluid.InferiorMetalFluids;
+import com.yukimods.alloyext.TFCAlloyExt;
+import com.yukimods.alloyext.metal.InferiorAddonMetals;
+import com.yukimods.alloyext.metal.InferiorFirmalifeMetals;
+import com.yukimods.alloyext.metal.InferiorMetalFluids;
 import com.yukimods.alloyext.metal.SolderMetal;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;

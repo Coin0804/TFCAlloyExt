@@ -1,15 +1,21 @@
-package com.yukimods.alloyext;
+package com.yukimods.alloyext.metal;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 /**
  * 劣等金属定义 —— 集中管理名称、熔点等元数据。
  * <p>
- * 替代此前散落在 ModItems、ModBlocks、InferiorMetalFluids、InferiorAlloyLogic
- * 中的硬编码字符串，统一从枚举派生注册 ID。
+ * 替代此前散落在各注册类中的硬编码字符串，统一从枚举派生注册 ID。
+ * 注册 ID 的派生规则见 {@link MetalRegistration}。
  */
 public enum InferiorMetal {
 
+    // (name, meltingTemp°C, 流体颜色ARGB)
+    // meltingTemp 与 data/tfc/tfc/fluid_heat/inferior_*.json 的 melt_temperature 对应（单一数据源）
+    // color 为 TFC 原版 Metal.getColor() - 0x0F 的略暗色变体
     COPPER("copper", 1026, 0xFFA73118),
     TIN("tin", 219, 0xFF8195AC),
     ZINC("zinc", 399, 0xFFACACB5),
@@ -36,23 +42,6 @@ public enum InferiorMetal {
 
     /** 流体 tint 颜色（RRGGBB），配合 lava-like 渲染使用 */
     public int getColor() { return color; }
-
-    // ─── 注册 ID 派生 ──────────────────────────────────────
-
-    /** 静止流体 ID，如 "metal/inferior_copper" */
-    public String getFluidId() { return "metal/inferior_" + name; }
-
-    /** 流动流体 ID，如 "metal/flowing_inferior_copper" */
-    public String getFlowingFluidId() { return "metal/flowing_inferior_" + name; }
-
-    /** 流体方块 ID，如 "fluid/metal/inferior_copper" */
-    public String getBlockId() { return "fluid/metal/inferior_" + name; }
-
-    /** 合金锭物品 ID，如 "inferior_copper_ingot" */
-    public String getIngotId() { return "inferior_" + name + "_ingot"; }
-
-    /** 流体桶物品 ID，如 "inferior_copper_bucket" */
-    public String getBucketId() { return "inferior_" + name + "_bucket"; }
 
     // ─── 静态工具 ──────────────────────────────────────────
 

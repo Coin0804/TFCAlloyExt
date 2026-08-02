@@ -1,8 +1,10 @@
-package com.yukimods.alloyext;
+package com.yukimods.alloyext.client;
 
-import com.yukimods.alloyext.fluid.InferiorAddonMetals;
-import com.yukimods.alloyext.fluid.InferiorFirmalifeMetals;
-import com.yukimods.alloyext.fluid.InferiorMetalFluids;
+import com.yukimods.alloyext.TFCAlloyExt;
+import com.yukimods.alloyext.metal.InferiorAddonMetals;
+import com.yukimods.alloyext.metal.InferiorFirmalifeMetals;
+import com.yukimods.alloyext.metal.InferiorMetal;
+import com.yukimods.alloyext.metal.InferiorMetalFluids;
 import com.yukimods.alloyext.metal.SolderMetal;
 import net.dries007.tfc.client.ClientEventHandler;
 import net.dries007.tfc.client.extensions.FluidRendererExtension;
@@ -24,7 +26,7 @@ public class ModClientSetup {
     private static final int SOLDER_COLOR = 0xFFB8B8B8;
 
     @SubscribeEvent
-    static void registerExtensions(RegisterClientExtensionsEvent event) {
+    public static void registerExtensions(RegisterClientExtensionsEvent event) {
         // 劣等合金流体
         for (InferiorMetal metal : InferiorMetal.VALUES) {
             var holder = InferiorMetalFluids.getInferiorFluid(metal.getName());
@@ -75,7 +77,7 @@ public class ModClientSetup {
      * 遍历注册表 → 过滤命名空间 → {@code fluid.getBucket()} 拿桶 → 注册 ItemColor。
      */
     @SubscribeEvent
-    static void registerItemColors(RegisterColorHandlersEvent.Item event) {
+    public static void registerItemColors(RegisterColorHandlersEvent.Item event) {
         var colors = new DynamicFluidContainerModel.Colors();
 
         for (var fluid : BuiltInRegistries.FLUID) {

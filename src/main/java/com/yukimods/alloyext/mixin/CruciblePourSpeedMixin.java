@@ -1,9 +1,12 @@
 package com.yukimods.alloyext.mixin;
 
-import com.yukimods.alloyext.ModConfig;
+import com.yukimods.alloyext.config.ModConfig;
 import net.dries007.tfc.common.blockentities.CrucibleBlockEntity;
+import net.dries007.tfc.common.blockentities.CrucibleBlockEntity.CrucibleInventory;
 import net.dries007.tfc.common.fluids.FluidHelpers;
+import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler.FluidAction;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
@@ -39,10 +42,10 @@ public abstract class CruciblePourSpeedMixin {
     @Redirect(method = "serverTick",
               at = @At(value = "INVOKE",
                        target = "Lnet/dries007/tfc/common/blockentities/CrucibleBlockEntity$CrucibleInventory;drain(ILnet/neoforged/neoforge/fluids/capability/IFluidHandler$FluidAction;)Lnet/neoforged/neoforge/fluids/FluidStack;"))
-    private static net.neoforged.neoforge.fluids.FluidStack fasterDrain(
-            net.dries007.tfc.common.blockentities.CrucibleBlockEntity.CrucibleInventory inventory,
+    private static FluidStack fasterDrain(
+            CrucibleInventory inventory,
             int amount,
-            net.neoforged.neoforge.fluids.capability.IFluidHandler.FluidAction action) {
+            FluidAction action) {
         return inventory.drain(amount * ModConfig.CRUCIBLE_POUR_SPEED_MULTIPLIER.get(), action);
     }
 }

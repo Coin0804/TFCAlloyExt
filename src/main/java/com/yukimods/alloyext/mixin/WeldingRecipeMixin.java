@@ -1,6 +1,6 @@
 package com.yukimods.alloyext.mixin;
 
-import com.yukimods.alloyext.InferiorOrigin;
+import com.yukimods.alloyext.metal.InferiorOrigin;
 import com.yukimods.alloyext.TFCAlloyExt;
 import com.yukimods.alloyext.util.InferiorMetalHelper;
 import net.dries007.tfc.common.recipes.WeldingRecipe;

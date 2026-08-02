@@ -18,6 +18,8 @@ When melting metals in a crucible, if the ratios don't match any known alloy rec
 - TFC-IE-Crossover (optional): Aluminum, Lead, Uranium
 - Firmalife (optional): Chromium
 
+**Alloy decomposition:** When a known alloy (e.g. bronze) is part of an impure mix, it is decomposed into its pure metal components using TFC's own alloy recipes, read at runtime — no hardcoded tables. When a decomposition is uncertain (multiple recipes produce the same alloy, or a recipe has optional ingredients with `min = 0`), only the certain base metal is counted, so unidentifiable secondary metals never distort the judgement.
+
 ### Iron Inferior System
 
 In TFC, wrought iron is purified through repeated forging, while cast iron is the brittle, high-carbon form. This system treats **wrought iron as pure iron** and **cast iron as inferior iron**.
@@ -65,7 +67,7 @@ Configurable pour speed multiplier (default 4×). Accelerates fluid transfer fro
 
 ```bash
 ./gradlew jar
-# Output: build/libs/tfc_alloy_ext-neoforge-0.0.1.jar
+# Output: build/libs/tfc_alloy_ext-neoforge-0.2.0-beta.jar
 ```
 
 ### License
@@ -87,6 +89,8 @@ MIT — see [LICENSE](LICENSE)
 **可选模组扩展：**
 - 安装 TFC-IE-Crossover 后：铝、铅、铀
 - 安装 Firmalife 后：铬
+
+**合金分解：** 当混合物中含有已知合金（如青铜）时，会按 TFC 自身的合金配方（运行时读取，无硬编码表）分解为纯金属成分参与判定。当分解存在不确定性时（同一合金有多个配方、或配方含 `min=0` 的可选成分），只计入确定的基础金属，避免无法推断的次等金属扭曲判定结果。
 
 ### 铁劣等系统
 
@@ -135,7 +139,7 @@ MIT — see [LICENSE](LICENSE)
 
 ```bash
 ./gradlew jar
-# 输出：build/libs/tfc_alloy_ext-neoforge-0.0.1.jar
+# 输出：build/libs/tfc_alloy_ext-neoforge-0.2.0-beta.jar
 ```
 
 ### 许可

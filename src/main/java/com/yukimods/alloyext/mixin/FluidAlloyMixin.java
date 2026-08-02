@@ -1,6 +1,6 @@
 package com.yukimods.alloyext.mixin;
 
-import com.yukimods.alloyext.fluid.InferiorAlloyLogic;
+import com.yukimods.alloyext.metal.InferiorAlloyLogic;
 import net.dries007.tfc.common.fluids.TFCFluids;
 import net.dries007.tfc.util.FluidAlloy;
 import net.dries007.tfc.util.Metal;
@@ -42,9 +42,9 @@ public abstract class FluidAlloyMixin {
         }
         if (result.getFluid() != unknown) return;
 
-        // 执行劣等合金规则
+        // 执行劣等合金规则（RecipeManager 来自 getResult 参数，调用时配方已加载）
         FluidAlloy self = (FluidAlloy) (Object) this;
-        FluidStack inferior = InferiorAlloyLogic.resolve(self);
+        FluidStack inferior = InferiorAlloyLogic.resolve(self, recipeManager);
         if (inferior != null) {
             cir.setReturnValue(inferior);
         }

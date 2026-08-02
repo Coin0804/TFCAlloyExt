@@ -1,8 +1,11 @@
 package com.yukimods.alloyext;
 
-import com.yukimods.alloyext.fluid.InferiorAddonMetals;
-import com.yukimods.alloyext.fluid.InferiorFirmalifeMetals;
-import com.yukimods.alloyext.fluid.InferiorMetalFluids;
+import com.yukimods.alloyext.client.ModCreativeTab;
+import com.yukimods.alloyext.config.ModConfig;
+import com.yukimods.alloyext.metal.InferiorAddonMetals;
+import com.yukimods.alloyext.metal.InferiorFirmalifeMetals;
+import com.yukimods.alloyext.metal.InferiorMetalFluids;
+import com.yukimods.alloyext.metal.InferiorOrigin;
 import com.yukimods.alloyext.metal.SolderMetal;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.Registries;
@@ -10,6 +13,7 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig.Type;
+import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,7 +39,7 @@ public class TFCAlloyExt {
             DeferredRegister.create(Registries.DATA_COMPONENT_TYPE, MOD_ID);
 
     /** 标记物品的劣等金属来源，如 "copper"。锻造/浇铸时写入，熔融时读取。 */
-    public static final net.neoforged.neoforge.registries.DeferredHolder<DataComponentType<?>, DataComponentType<InferiorOrigin>> INFERIOR_ORIGIN =
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<InferiorOrigin>> INFERIOR_ORIGIN =
             DATA_COMPONENTS.register("inferior_origin",
                     () -> DataComponentType.<InferiorOrigin>builder()
                             .persistent(InferiorOrigin.CODEC)
@@ -79,7 +83,7 @@ public class TFCAlloyExt {
         SolderMetal.BLOCKS.register(modEventBus);
         SolderMetal.ITEMS.register(modEventBus);
 
-        // ModItems 目前无物品（桶已迁移至各流体注册类），保留占位
+        // 创造模式标签页（桶/锭物品均注册于各金属注册类）
         ModCreativeTab.CREATIVE_TABS.register(modEventBus);
 
         LOGGER.info("已注册 7+3 种熔融劣等合金流体 + 焊锡金属 + 7 种流体桶 + 液体方块 + 劣等溯源组件");

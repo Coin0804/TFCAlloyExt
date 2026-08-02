@@ -1,4 +1,4 @@
-package com.yukimods.alloyext;
+package com.yukimods.alloyext.metal;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;

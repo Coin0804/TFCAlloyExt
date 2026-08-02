@@ -1,20 +1,23 @@
-package com.yukimods.alloyext.fluid;
+package com.yukimods.alloyext.metal;
 
-import com.yukimods.alloyext.InferiorMetal;
-import com.yukimods.alloyext.ModConfig;
+import com.yukimods.alloyext.config.ModConfig;
 import it.unimi.dsi.fastutil.objects.Object2DoubleMap;
+import net.dries007.tfc.common.fluids.FluidHolder;
 import net.dries007.tfc.common.fluids.TFCFluids;
+import net.dries007.tfc.util.FluidAlloy;
 import net.dries007.tfc.util.Metal;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.level.material.Fluid;
+import net.neoforged.neoforge.fluids.BaseFlowingFluid;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.Nullable;
 
-import net.dries007.tfc.common.fluids.FluidHolder;
-import net.dries007.tfc.util.FluidAlloy;
-import net.neoforged.neoforge.fluids.BaseFlowingFluid;
-
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * 劣等合金核心逻辑。
@@ -33,12 +36,16 @@ public class InferiorAlloyLogic {
 
     /**
      * 解析流体混合物，判断是否应替换为劣等合金。
+     * <p>
+     * 已知合金（见 {@link AlloyTypicalRatios}）按典型比例分解为纯金属后
+     * 参与判定，避免整炉合金流体直接黑箱沉没为 UNKNOWN。
      *
      * @param alloy 坩埚/小缸中的流体混合物 (FluidAlloy)
+     * @param recipeManager 当前配方管理器（由调用方传入，调用时配方已完整加载）
      * @return 替换后的 FluidStack，或 null 表示保持 UNKNOWN 不变
      */
     @Nullable
-    public static FluidStack resolve(FluidAlloy alloy) {
+    public static FluidStack resolve(FluidAlloy alloy, RecipeManager recipeManager) {
         Object2DoubleMap<Fluid> content = alloy.getContent();
         if (content.size() < 2) return null; // 单流体不处理
 
@@ -59,13 +66,7 @@ public class InferiorAlloyLogic {
                     isCastIronFluid(fluid)) {
                 inferiorFluids.add(fluid);
             } else {
-                String metalName = extractPureMetalName(fluid);
-                if (metalName == null) {
-                    metalName = InferiorAddonMetals.extractAddonPureMetalName(fluid);
-                }
-                if (metalName == null) {
-                    metalName = InferiorFirmalifeMetals.extractFirmalifePureMetalName(fluid);
-                }
+                String metalName = getComponentMetalName(fluid);
                 if (metalName == null && isWroughtIronFluid(fluid)) {
                     metalName = WROUGHT_IRON;
                 }
@@ -75,8 +76,19 @@ public class InferiorAlloyLogic {
                         WROUGHT_IRON.equals(metalName))) {
                     pureAmounts.merge(metalName, amount, Double::sum);
                 } else {
-                    // 非目标金属（水、TFC合金流体等）→ 保持 UNKNOWN
-                    return null;
+                    // 合金流体：按 TFC 合金配方典型比例分解为纯金属（运行时读取，无硬编码）
+                    Map<Fluid, Double> ratios = AlloyTypicalRatios.getRatios(recipeManager, fluid);
+                    if (ratios != null) {
+                        for (var ratio : ratios.entrySet()) {
+                            String name = getComponentMetalName(ratio.getKey());
+                            if (name != null) {
+                                pureAmounts.merge(name, amount * ratio.getValue(), Double::sum);
+                            }
+                        }
+                    } else {
+                        // 非目标流体（水、未知合金等）→ 保持 UNKNOWN
+                        return null;
+                    }
                 }
             }
         }
@@ -132,6 +144,19 @@ public class InferiorAlloyLogic {
     }
 
     // ─── 通用辅助 ──────────────────────────────────────────
+
+    /** 从流体提取纯金属名（TFC → IE Addon → Firmalife 链），非纯金属返回 null */
+    @Nullable
+    private static String getComponentMetalName(Fluid fluid) {
+        String name = extractPureMetalName(fluid);
+        if (name == null) {
+            name = InferiorAddonMetals.extractAddonPureMetalName(fluid);
+        }
+        if (name == null) {
+            name = InferiorFirmalifeMetals.extractFirmalifePureMetalName(fluid);
+        }
+        return name;
+    }
 
     /**
      * 从 TFC 纯金属流体 ID 提取金属名称。

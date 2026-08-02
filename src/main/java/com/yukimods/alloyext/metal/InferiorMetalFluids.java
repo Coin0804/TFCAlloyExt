@@ -1,16 +1,10 @@
-package com.yukimods.alloyext.fluid;
+package com.yukimods.alloyext.metal;
 
-import com.yukimods.alloyext.InferiorMetal;
-import com.yukimods.alloyext.util.FluidRegistrationHelper;
 import net.dries007.tfc.common.blocks.MoltenFluidBlock;
 import net.dries007.tfc.common.fluids.FluidHolder;
-import net.dries007.tfc.common.fluids.MoltenFluid;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.BaseFlowingFluid;
 import net.neoforged.neoforge.fluids.FluidType;
@@ -18,20 +12,19 @@ import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 import static com.yukimods.alloyext.TFCAlloyExt.MOD_ID;
 
 /**
  * 7 种「熔融劣等X合金」流体的注册与查询。
  * <p>
- * 采用标准 NeoForge DeferredRegister + DeferredHolder 模式。
- * DeferredHolder 实现了 {@link java.util.function.Supplier}，
- * 可安全传递到 {@link BaseFlowingFluid.Properties} 和 {@link MoltenFluidBlock} 中。
- * 所有 {@code get()} 调用在注册事件触发时才解析，不存在运行时顺序问题。
- * <p>
- * 同时持有 {@link #BLOCKS} DeferredRegister 和方块 DeferredHolder，
- * 避免 ModBlocks ↔ InferiorMetalFluids 双向引用。
+ * 注册逻辑委托 {@link MetalRegistration#registerInferior}（ID 派生规则见该类），
+ * 本类只持有各金属的 DeferredRegister 与查询用 MAP。
+ * 劣等金属无自有锭：铸造/加热产物复用 TFC 原版金属物品。
  */
 public class InferiorMetalFluids {
 
@@ -43,9 +36,6 @@ public class InferiorMetalFluids {
             DeferredRegister.create(Registries.BLOCK, MOD_ID);
     public static final DeferredRegister<Item> ITEMS =
             DeferredRegister.create(Registries.ITEM, MOD_ID);
-
-    private static final BlockBehaviour.Properties FLUID_BLOCK_PROPS = BlockBehaviour.Properties.of()
-            .liquid().noCollission().strength(100f).noLootTable().replaceable();
 
     // ─── 内部 map（register() 填充，按 static 声明顺序执行） ─
 
@@ -95,58 +85,13 @@ public class InferiorMetalFluids {
 
     // ─── 注册逻辑 ──────────────────────────────────────────
 
-    /**
-     * 注册一组劣等金属流体及其对应方块。
-     *
-     * <h3>Properties ↔ Fluid 循环引用</h3>
-     * <ul>
-     *   <li>FluidType — 独立创建，无上游依赖</li>
-     *   <li>Source / Flowing — 需要 Properties（但 Properties 又需要它们作为 Supplier）</li>
-     *   <li>Block — 需要 Flowing 的 Supplier</li>
-     *   <li>Properties — 需要 FluidType + Source + Flowing + Block 的 Supplier</li>
-     * </ul>
-     * 使用单元素数组 {@code propsRef} 打破 "effectively final" 限制：
-     * DeferredRegister 的 factory lambda 捕获数组引用，数组内容在 Properties 创建后写入。
-     * DeferredHolder.get() 仅在注册事件触发时才调用（BLOCK → FLUID_TYPES → FLUID），
-     * 不会在类加载期间提前 resolve。
-     */
     private static FluidHolder<BaseFlowingFluid> register(InferiorMetal metal) {
-        // 1. FluidType
-        var typeHolder = FLUID_TYPES.register(metal.getFluidId(),
-                () -> FluidRegistrationHelper.createMoltenFluidType(
-                        "fluid." + MOD_ID + ".metal.inferior_" + metal.getName()));
-
-        // 2. 数组引用 — 解决 Properties ↔ Fluid 循环依赖
-        BaseFlowingFluid.Properties[] propsRef = new BaseFlowingFluid.Properties[1];
-
-        // 3. Source + Flowing DeferredHolder（factory 捕获 propsRef，延迟解析）
-        var sourceHolder = FLUIDS.register(metal.getFluidId(),
-                () -> new MoltenFluid.Source(propsRef[0]));
-        var flowingHolder = FLUIDS.register(metal.getFlowingFluidId(),
-                () -> new MoltenFluid.Flowing(propsRef[0]));
-
-        // 4. Block — flowingHolder 是 DeferredHolder，天然实现 Supplier
-        var blockHolder = BLOCKS.register(metal.getBlockId(),
-                () -> new MoltenFluidBlock(flowingHolder, FLUID_BLOCK_PROPS));
-        BLOCK_MAP.put(metal.getName(), blockHolder);
-
-        // 5. 桶物品 — SafeBucketItem（禁用放置交互）
-        var bucketHolder = ITEMS.register(metal.getBucketId(),
-                () -> new BucketItem(sourceHolder.get(), new Item.Properties().stacksTo(1)));
-        @SuppressWarnings({"unchecked"})
-        var bucketEntry = (DeferredHolder<Item, ? extends Item>) (DeferredHolder<?, ?>) bucketHolder;
-        BUCKET_MAP.put(metal.getName(), bucketEntry);
-
-        // 6. Properties
-        propsRef[0] = new BaseFlowingFluid.Properties(typeHolder, sourceHolder, flowingHolder)
-                .block(blockHolder).bucket(bucketHolder);
-        FluidRegistrationHelper.configureMoltenProperties(propsRef[0]);
-
-        // 7. FluidHolder
-        @SuppressWarnings({"rawtypes", "unchecked"})
-        FluidHolder<BaseFlowingFluid> holder = new FluidHolder(typeHolder, flowingHolder, sourceHolder);
-        FLUID_MAP.put(metal.getName(), holder);
-        return holder;
+        MetalRegistration.Result result = MetalRegistration.registerInferior(
+                FLUID_TYPES, FLUIDS, BLOCKS, ITEMS, metal.getName());
+        FLUID_MAP.put(metal.getName(), result.fluid());
+        BLOCK_MAP.put(metal.getName(), result.block());
+        BUCKET_MAP.put(metal.getName(), result.bucket());
+        return result.fluid();
     }
 
     // ─── 工具方法 ──────────────────────────────────────────
@@ -163,23 +108,10 @@ public class InferiorMetalFluids {
 
     /**
      * 反向查找：Fluid → 基础金属名。
-     * 基于注册表 ID 前缀匹配，O(1) 字符串操作，替代旧版 O(n) 遍历比较。
+     * 基于注册表 ID 前缀匹配 + 本类金属白名单，O(1) 字符串操作。
      */
     public static String getBaseMetalFromInferior(Fluid fluid) {
-        var key = BuiltInRegistries.FLUID.getKey(fluid);
-        if (key == null || !MOD_ID.equals(key.getNamespace())) return null;
-        String path = key.getPath();
-        if (path.startsWith("metal/inferior_")) {
-            int start = "metal/inferior_".length();
-            int end = path.indexOf('/', start);
-            return end < 0 ? path.substring(start) : path.substring(start, end);
-        }
-        if (path.startsWith("metal/flowing_inferior_")) {
-            int start = "metal/flowing_inferior_".length();
-            int end = path.indexOf('/', start);
-            return end < 0 ? path.substring(start) : path.substring(start, end);
-        }
-        return null;
+        return MetalRegistration.getBaseMetalFromInferior(fluid, InferiorMetal.NAMES);
     }
 
     /** 所有已注册的劣等合金流体 */

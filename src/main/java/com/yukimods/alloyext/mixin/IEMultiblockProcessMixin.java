@@ -1,7 +1,7 @@
 package com.yukimods.alloyext.mixin;
 
 import blusunrize.immersiveengineering.api.crafting.IMultiblockRecipe;
-import com.yukimods.alloyext.InferiorOrigin;
+import com.yukimods.alloyext.metal.InferiorOrigin;
 import com.yukimods.alloyext.TFCAlloyExt;
 import net.minecraft.world.item.ItemStack;
 import org.spongepowered.asm.mixin.Mixin;

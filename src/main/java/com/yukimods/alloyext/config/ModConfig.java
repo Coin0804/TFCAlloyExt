@@ -1,4 +1,4 @@
-package com.yukimods.alloyext;
+package com.yukimods.alloyext.config;
 
 import net.neoforged.neoforge.common.ModConfigSpec;
 

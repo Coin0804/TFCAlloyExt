@@ -1,5 +1,7 @@
-package com.yukimods.alloyext;
+package com.yukimods.alloyext.event;
 
+import com.yukimods.alloyext.TFCAlloyExt;
+import com.yukimods.alloyext.metal.InferiorOrigin;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;

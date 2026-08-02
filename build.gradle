@@ -53,7 +53,7 @@ repositories {
 
 dependencies {
     // TFC — compileOnly (Mixin 目标 + MoltenFluid 基类)
-    compileOnly files('../../mods/TerraFirmaCraft-NeoForge-1.21.1-4.2.5.jar')
+    compileOnly files('../../mods/TerraFirmaCraft-NeoForge-1.21.1-4.2.6.jar')
     // Productive Metalworks — compileOnly (Mixin 目标, optional)
     compileOnly files('../../mods/productivemetalworks-1.21.1-1.15.0.jar')
     // Immersive Engineering — compileOnly (Mixin 目标, optional)

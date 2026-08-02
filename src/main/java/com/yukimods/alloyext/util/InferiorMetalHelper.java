@@ -1,10 +1,10 @@
 package com.yukimods.alloyext.util;
 
-import com.yukimods.alloyext.InferiorMetal;
-import com.yukimods.alloyext.InferiorOrigin;
 import com.yukimods.alloyext.TFCAlloyExt;
+import com.yukimods.alloyext.metal.InferiorMetal;
+import com.yukimods.alloyext.metal.InferiorOrigin;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -29,21 +29,13 @@ public class InferiorMetalHelper {
         // 检查物品 ID
         var key = stack.getItemHolder().getKey();
         if (key == null) return null;
-        String path = key.location().getPath();
-        String ns = key.location().getNamespace();
+        ResourceLocation location = key.location();
+        String ns = location.getNamespace();
+        String path = location.getPath();
         if (!"tfc_alloy_ext".equals(ns) || !path.startsWith("inferior_") || !path.endsWith("_ingot")) {
             return null;
         }
         String middle = path.substring("inferior_".length(), path.length() - "_ingot".length());
         return InferiorMetal.NAMES.contains(middle) ? middle : null;
-    }
-
-    /**
-     * 从劣等合金流体 ID 提取基体金属名。
-     * 例如 "tfc_alloy_ext:metal/inferior_copper" → "copper"，否则 null。
-     */
-    @Nullable
-    public static String getBaseMetalFromInferiorFluid(FluidStack stack) {
-        return com.yukimods.alloyext.fluid.InferiorMetalFluids.getBaseMetalFromInferior(stack.getFluid());
     }
 }
