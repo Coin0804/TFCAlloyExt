@@ -1,5 +1,9 @@
 # TODO — TFC Alloy Extension
 
+## 近期完成 (2026-08-03)
+
+- [x] **劣等合金工具耐久减益（游戏内验证通过）** — 劣等工具头合成的工具（工具/鱼竿）出生即损 `inferiorToolDurabilityPenalty`（默认 10%，范围 0~0.9）最大耐久。纯事件实现（ModEvents.onItemCrafted 在组件追溯后补刀），零 Mixin；TFC 无修复配方故减益持续整个工具寿命；砧锻劣等头保留 TFC 锻造加成（用户决策，加成与减益共存）
+
 ## 近期完成 (2026-08-02)
 
 - [x] **按功能分目录重构** — 根包仅留主类；新建 config/event/client/ 包，全部金属相关收进 metal/；删除空壳 block/ModBlocks、item/ModItems

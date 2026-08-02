@@ -25,6 +25,12 @@ public class ModConfig {
      */
     public static final ModConfigSpec.BooleanValue ENABLE_IRON_INFERIOR_SYSTEM;
 
+    /**
+     * 劣等合金工具耐久减益：劣等工具头合成的可损伤产物（工具/鱼竿），
+     * 出生即损失该比例的最大耐久。默认 0.10（出生 90% 耐久），范围 0~0.90。
+     */
+    public static final ModConfigSpec.DoubleValue INFERIOR_TOOL_DURABILITY_PENALTY;
+
     static {
         ModConfigSpec.Builder builder = new ModConfigSpec.Builder();
 
@@ -48,6 +54,12 @@ public class ModConfig {
                         "No new fluids/items are registered; uses existing TFC cast_iron and wrought_iron.",
                         "Default: false (disabled).")
                 .define("enableIronInferiorSystem", false);
+        INFERIOR_TOOL_DURABILITY_PENALTY = builder
+                .comment("Durability penalty for tools crafted from inferior alloy heads.",
+                        "The crafted tool starts with this fraction of its max durability already damaged.",
+                        "TFC has no tool repair recipes, so the penalty lasts the tool's whole life.",
+                        "Range: 0 (no penalty) to 0.90. Default: 0.10 (start at 90% durability).")
+                .defineInRange("inferiorToolDurabilityPenalty", 0.10, 0.0, 0.90);
         builder.pop();
 
         SERVER_SPEC = builder.build();

@@ -8,6 +8,7 @@
   - Unique recipe without optional ingredients (`min = 0`) → full decomposition at range midpoints
   - Unique recipe with optional ingredients → only the certain base metal is decomposed
   - Multiple recipes producing the same alloy → only the base metal, smallest midpoint across all recipes
+- **Inferior tool durability penalty**: tools (and fishing rods) assembled from inferior-alloy heads start with a configurable fraction of their max durability already damaged (`inferiorToolDurabilityPenalty`, default 10%, range 0–90%). Implemented purely via `PlayerEvent.ItemCraftedEvent` (the existing origin-tracing handler) — no mixins. TFC has no tool repair recipes, so the penalty lasts the tool's whole life. Anvil-forged inferior heads keep their vanilla forging bonus by design (bonus and penalty coexist).
 
 ### Changes
 
