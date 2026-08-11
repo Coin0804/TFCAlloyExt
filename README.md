@@ -39,6 +39,17 @@ A new metal added by this mod — a tin-lead-bismuth alloy with its own fluid, i
 
 Items crafted with inferior alloy materials automatically inherit the "inferior" tag. This tag persists through TFC forging, welding, and vanilla crafting, ensuring correct fluid recovery when the item is eventually melted down. Compatible with Immersive Engineering multiblock machines — the tag is preserved through Arc Furnace and Alloy Smelter processing.
 
+### Ferroalloys: Ferronickel & Ferrochromium (0.3.0-beta)
+
+New iron-alloy metals with full registration (fluid + block + bucket + ingot), melt/cast recipes and tags:
+
+- **Ferronickel** (FeNi, 15–35% Ni) — always registered; alloyed from nickel 20–30% + cast iron 70–80%
+- **Ferrochromium** (FeCr, high-carbon) — registered when Firmalife is present; alloyed from chromium 60–70% + cast iron 30–40%
+
+**Alloy consumption routes** (mass-conservation matrix, vanilla routes preserved):
+- Stainless steel (ferro route): ferronickel + ferrochromium + cast iron
+- Weak steel (ferro route): ferronickel + black bronze
+
 ### Crucible Pour Speed
 
 Configurable pour speed multiplier (default 4×). Accelerates fluid transfer from the crucible into molds.
@@ -48,6 +59,7 @@ Configurable pour speed multiplier (default 4×). Accelerates fluid transfer fro
 | Mod | Type |
 |-----|------|
 | TerraFirmaCraft 4.1.3+ | Required |
+| TFC Extensions API (tfc_ext_api) 0.3.0+ | Required |
 | TFC-IE-Crossover 2.1+ | Optional |
 | Immersive Engineering 12.0+ | Optional |
 | Productive Metalworks | Optional |
@@ -111,6 +123,17 @@ MIT — see [LICENSE](LICENSE)
 
 使用劣等合金材料合成物品时，产物会自动继承"劣等"标记。这个标记在群峦锻造、焊接、原版合成中持续传递，也兼容沉浸工程的多方块机器——电弧炉和合金窑处理过程中标记不会丢失，确保最终回熔时能正确返回劣等流体。
 
+### 铁合金：镍铁与铬铁（0.3.0-beta）
+
+新铁合金金属，完整注册（流体+方块+桶+锭）、熔铸配方与标签：
+
+- **镍铁**（FeNi，含镍 15-35%）——始终注册；镍 20-30% + 铸铁 70-80% 合金化
+- **铬铁**（FeCr，高碳）——Firmalife 存在时注册；铬 60-70% + 铸铁 30-40% 合金化
+
+**合金消费路线**（成分守恒矩阵，原配方保留）：
+- 不锈钢（ferro 路线）：镍铁 + 铬铁 + 铸铁
+- 脆钢（ferro 路线）：镍铁 + 黑青铜
+
 ### 坩埚倾倒加速
 
 可配置的倾倒速度倍率（默认 4×），加速坩埚向模具排出流体。
@@ -120,6 +143,7 @@ MIT — see [LICENSE](LICENSE)
 | 模组 | 类型 |
 |------|------|
 | TerraFirmaCraft 4.1.3+ | 必需 |
+| 群峦扩展 API（tfc_ext_api）0.3.0+ | 必需 |
 | TFC-IE-Crossover 2.1+ | 可选 |
 | Immersive Engineering 12.0+ | 可选 |
 | Productive Metalworks | 可选 |
@@ -127,19 +151,19 @@ MIT — see [LICENSE](LICENSE)
 
 ### 配置
 
-配置文件：`config/tfc_alloy_ext-server.toml`
+配置文件：`config/tfc_alloy_ext-server.toml`（倾倒/阈值/耐久减益）+ `config/tfc_alloy_ext-common.toml`（铁劣等开关——配方条件在数据包重载时读取，早于 SERVER 配置加载，故独立 COMMON）
 
 | 设置项 | 默认值 | 说明 |
 |--------|--------|------|
 | `crucible.pourSpeedMultiplier` | 4 | 坩埚倾倒速度倍率 |
 | `alloy.inferiorAlloyThreshold` | 0.75 | 劣等合金判定阈值（50%~100%） |
-| `alloy.enableIronInferiorSystem` | false | 铁劣等系统开关 |
+| `alloy.enableIronInferiorSystem` | false | 铁劣等系统开关（COMMON 配置） |
 
 ### 构建
 
 ```bash
 ./gradlew jar
-# 输出：build/libs/tfc_alloy_ext-neoforge-0.2.0-beta.jar
+# 输出：build/libs/tfc_alloy_ext-neoforge-0.3.0-beta.jar
 ```
 
 ### 许可

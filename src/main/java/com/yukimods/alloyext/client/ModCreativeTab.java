@@ -1,10 +1,10 @@
 package com.yukimods.alloyext.client;
 
 import com.yukimods.alloyext.TFCAlloyExt;
-import com.yukimods.alloyext.metal.InferiorAddonMetals;
-import com.yukimods.alloyext.metal.InferiorFirmalifeMetals;
-import com.yukimods.alloyext.metal.InferiorMetalFluids;
-import com.yukimods.alloyext.metal.SolderMetal;
+import com.yukimods.alloyext.metal.InferiorMetal;
+import com.yukimods.alloyext.metal.InferiorMetals;
+import com.yukimods.alloyext.metal.RegularMetal;
+import com.yukimods.alloyext.metal.RegularMetals;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.CreativeModeTab;
@@ -23,29 +23,17 @@ public class ModCreativeTab {
     public static final DeferredHolder<CreativeModeTab, CreativeModeTab> TAB =
             CREATIVE_TABS.register("tab", () -> CreativeModeTab.builder()
                     .title(Component.translatable("itemGroup.tfc_alloy_ext"))
-                    .icon(() -> new ItemStack(InferiorMetalFluids.INFERIOR_COPPER_BUCKET.get()))
+                    .icon(() -> new ItemStack(InferiorMetals.getBucket(InferiorMetal.COPPER).get()))
                     .displayItems((params, output) -> {
-                        // 劣等合金桶（7 种，来自 InferiorMetalFluids）
-                        output.accept(InferiorMetalFluids.INFERIOR_COPPER_BUCKET.get());
-                        output.accept(InferiorMetalFluids.INFERIOR_TIN_BUCKET.get());
-                        output.accept(InferiorMetalFluids.INFERIOR_ZINC_BUCKET.get());
-                        output.accept(InferiorMetalFluids.INFERIOR_BISMUTH_BUCKET.get());
-                        output.accept(InferiorMetalFluids.INFERIOR_GOLD_BUCKET.get());
-                        output.accept(InferiorMetalFluids.INFERIOR_SILVER_BUCKET.get());
-                        output.accept(InferiorMetalFluids.INFERIOR_NICKEL_BUCKET.get());
-                        // IE Addon 劣等合金桶（仅当 tfc_ie_addon 存在时）
-                        if (InferiorAddonMetals.isEnabled()) {
-                            output.accept(InferiorAddonMetals.INFERIOR_ALUMINUM_BUCKET.get());
-                            output.accept(InferiorAddonMetals.INFERIOR_LEAD_BUCKET.get());
-                            output.accept(InferiorAddonMetals.INFERIOR_URANIUM_BUCKET.get());
+                        // 劣等合金桶（11 种——铝/铅/铀与铬按前置 mod 条件在 InferiorMetals 内部过滤）
+                        for (InferiorMetal metal : InferiorMetals.getRegistered()) {
+                            output.accept(InferiorMetals.getBucket(metal).get());
                         }
-                        // Firmalife 劣等合金桶（仅当 firmalife 存在时）
-                        if (InferiorFirmalifeMetals.isEnabled()) {
-                            output.accept(InferiorFirmalifeMetals.INFERIOR_CHROMIUM_BUCKET.get());
+                        // 自有金属锭与桶（焊锡/镍铁/铬铁——铬铁仅当 firmalife 存在时已注册）
+                        for (RegularMetal metal : RegularMetals.getRegistered()) {
+                            output.accept(RegularMetals.getIngot(metal).get());
+                            output.accept(RegularMetals.getBucket(metal).get());
                         }
-                        // 焊锡
-                        output.accept(SolderMetal.INGOT.get());
-                        output.accept(SolderMetal.BUCKET.get());
                     })
                     .build());
 }

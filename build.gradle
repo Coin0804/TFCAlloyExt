@@ -52,12 +52,14 @@ repositories {
 }
 
 dependencies {
+    // 群峦扩展 API — compileOnly（MetalRegistration/FluidRegistrationHelper，required 依赖）
+    compileOnly fileTree('../../mods') { include '*tfc_ext_api-*.jar' }
     // TFC — compileOnly (Mixin 目标 + MoltenFluid 基类)
-    compileOnly files('../../mods/TerraFirmaCraft-NeoForge-1.21.1-4.2.6.jar')
-    // Productive Metalworks — compileOnly (Mixin 目标, optional)
-    compileOnly files('../../mods/productivemetalworks-1.21.1-1.15.0.jar')
+    compileOnly fileTree('../../mods') { include '*TerraFirmaCraft-NeoForge-*.jar' }
+    // Productive Metalworks — compileOnly (Mixin 目标, optional)；fileTree glob 展开 mods 目录，mod 升级无需改此处
+    compileOnly fileTree('../../mods') { include '*productivemetalworks-*.jar' }
     // Immersive Engineering — compileOnly (Mixin 目标, optional)
-    compileOnly files("../../mods/[沉浸工程] ImmersiveEngineering-1.21.1-12.4.2-194.jar")
+    compileOnly fileTree('../../mods') { include '*ImmersiveEngineering-*.jar' }
 }
 
 publishing {

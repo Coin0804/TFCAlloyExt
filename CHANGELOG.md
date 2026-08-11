@@ -1,5 +1,18 @@
 # Changelog — TFC Alloy Extension
 
+## 0.3.0-beta
+
+### Additions
+
+- **Unified registration workflow**: new metals are registered via enum-driven classes (`RegularMetal` / `RegularMetals` for owned metals — solder, ferronickel, ferrochromium; `InferiorMetal` / `InferiorMetals` unified for all 11 inferior metals incl. IE-Addon Al/Pb/U and Firmalife Cr). Registration delegates to the new **TFC Extensions API** (`MetalRegistration`), now a required dependency.
+- **Ferroalloy metals — Ferronickel & Ferrochromium**: molten fluid + block + bucket + ingot, with melt/cast recipes (fluid_heat / item_heat / casting / heating), tags (`c:molten_metal`, `tfc:molten_metals`, `c:ingots`), linear-blend ingot textures (nickel/chromium lower-left × cast iron upper-right).
+- **Mass-conservation alloy recipes** (matrix-solved, user-finalized): ferronickel (nickel 20–30% + cast iron 70–80%), ferrochromium (chromium 60–70% + cast iron 30–40%, firmalife-gated), stainless steel ferro route (ferronickel 35–45% + ferrochromium 27–35% + cast iron 24–33%), weak steel ferro route (ferronickel 75–85% + black bronze 15–25%). Vanilla routes preserved.
+- **Config-gated iron-line recipes**: custom recipe condition `tfc_alloy_ext:config_enabled` (reads `enableIronInferiorSystem`) applied to 39 wrought-iron heating recipes; the flag lives in a COMMON config (datapack reload evaluates conditions before SERVER config loads — 2026-08-09 timing pitfall).
+
+### Changes
+
+- Registration workflow (`MetalRegistration` / `FluidRegistrationHelper`) moved to TFC Extensions API — local copies removed, `tfc_ext_api` added as required dependency.
+
 ## 0.2.0-beta
 
 ### Additions

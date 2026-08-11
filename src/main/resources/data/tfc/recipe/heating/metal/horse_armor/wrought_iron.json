@@ -1,1 +1,1 @@
-{"type":"tfc:heating","ingredient":{"item":"tfc:metal/horse_armor/wrought_iron"},"result_fluid":{"amount":1200,"id":"tfc:metal/wrought_iron"},"temperature":1535.0,"use_durability":true}
+{"type":"tfc:heating","ingredient":{"item":"tfc:metal/horse_armor/wrought_iron"},"result_fluid":{"amount":1200,"id":"tfc:metal/wrought_iron"},"temperature":1535.0,"use_durability":true,"neoforge:conditions":[{"type":"tfc_alloy_ext:config_enabled","config":"enableIronInferiorSystem"}]}

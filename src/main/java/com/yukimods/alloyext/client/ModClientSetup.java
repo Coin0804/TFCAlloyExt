@@ -1,11 +1,10 @@
 package com.yukimods.alloyext.client;
 
 import com.yukimods.alloyext.TFCAlloyExt;
-import com.yukimods.alloyext.metal.InferiorAddonMetals;
-import com.yukimods.alloyext.metal.InferiorFirmalifeMetals;
 import com.yukimods.alloyext.metal.InferiorMetal;
-import com.yukimods.alloyext.metal.InferiorMetalFluids;
-import com.yukimods.alloyext.metal.SolderMetal;
+import com.yukimods.alloyext.metal.InferiorMetals;
+import com.yukimods.alloyext.metal.RegularMetal;
+import com.yukimods.alloyext.metal.RegularMetals;
 import net.dries007.tfc.client.ClientEventHandler;
 import net.dries007.tfc.client.extensions.FluidRendererExtension;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -22,14 +21,11 @@ import net.neoforged.neoforge.client.model.DynamicFluidContainerModel;
 @EventBusSubscriber(modid = TFCAlloyExt.MOD_ID, value = Dist.CLIENT)
 public class ModClientSetup {
 
-    /** 焊锡颜色：银灰色 */
-    private static final int SOLDER_COLOR = 0xFFB8B8B8;
-
     @SubscribeEvent
     public static void registerExtensions(RegisterClientExtensionsEvent event) {
-        // 劣等合金流体
-        for (InferiorMetal metal : InferiorMetal.VALUES) {
-            var holder = InferiorMetalFluids.getInferiorFluid(metal.getName());
+        // 劣等金属流体（11 种——铝/铅/铀与铬按前置 mod 条件在 InferiorMetals 内部过滤）
+        for (InferiorMetal metal : InferiorMetals.getRegistered()) {
+            var holder = InferiorMetals.getFluid(metal);
             if (holder == null) continue;
             event.registerFluidType(
                     new FluidRendererExtension(metal.getColor(),
@@ -38,37 +34,16 @@ public class ModClientSetup {
                     holder.getType());
         }
 
-        // IE Addon 劣等金属（仅当 tfc_ie_addon 存在时）
-        if (InferiorAddonMetals.isEnabled()) {
-            for (var metal : InferiorAddonMetals.ALL) {
-                var holder = InferiorAddonMetals.getFluid(metal.name());
-                if (holder == null) continue;
-                event.registerFluidType(
-                        new FluidRendererExtension(metal.color(),
-                                ClientEventHandler.MOLTEN_STILL, ClientEventHandler.MOLTEN_FLOW,
-                                null, null),
-                        holder.getType());
-            }
+        // 自有金属流体（焊锡/镍铁/铬铁——铬铁仅当 firmalife 存在时已注册）
+        for (RegularMetal metal : RegularMetals.getRegistered()) {
+            var holder = RegularMetals.getFluid(metal);
+            if (holder == null) continue;
+            event.registerFluidType(
+                    new FluidRendererExtension(metal.getColor(),
+                            ClientEventHandler.MOLTEN_STILL, ClientEventHandler.MOLTEN_FLOW,
+                            null, null),
+                    holder.getType());
         }
-
-        // Firmalife 劣等金属（仅当 firmalife 存在时）
-        if (InferiorFirmalifeMetals.isEnabled()) {
-            var holder = InferiorFirmalifeMetals.getFluid("chromium");
-            if (holder != null) {
-                event.registerFluidType(
-                        new FluidRendererExtension(InferiorFirmalifeMetals.getColor("chromium"),
-                                ClientEventHandler.MOLTEN_STILL, ClientEventHandler.MOLTEN_FLOW,
-                                null, null),
-                        holder.getType());
-            }
-        }
-
-        // 焊锡流体
-        event.registerFluidType(
-                new FluidRendererExtension(SOLDER_COLOR,
-                        ClientEventHandler.MOLTEN_STILL, ClientEventHandler.MOLTEN_FLOW,
-                        null, null),
-                SolderMetal.FLUID.getType());
     }
 
     /**

@@ -1,1 +1,1 @@
-{"type":"tfc:heating","ingredient":{"item":"tfc:metal/shovel_head/wrought_iron"},"result_fluid":{"amount":100,"id":"tfc:metal/wrought_iron"},"temperature":1535.0}
+{"type":"tfc:heating","ingredient":{"item":"tfc:metal/shovel_head/wrought_iron"},"result_fluid":{"amount":100,"id":"tfc:metal/wrought_iron"},"temperature":1535.0,"neoforge:conditions":[{"type":"tfc_alloy_ext:config_enabled","config":"enableIronInferiorSystem"}]}

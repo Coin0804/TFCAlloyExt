@@ -33,6 +33,14 @@ versionRange = "[4.1.0,5)"
 ordering = "NONE"
 side = "BOTH"
 
+# 群峦扩展 API — required（2026-08-10：注册工作流迁入 Lib）
+[[dependencies.${mod_id}]]
+modId = "tfc_ext_api"
+type = "required"
+versionRange = "[0.1.0-beta,5)"
+ordering = "AFTER"
+side = "BOTH"
+
 [[dependencies.${mod_id}]]
 modId = "immersiveengineering"
 type = "optional"

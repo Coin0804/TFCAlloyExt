@@ -23,6 +23,10 @@
     "tfc_alloy_ext:metal/inferior_chromium",
     "tfc_alloy_ext:metal/flowing_inferior_chromium",
     "tfc_alloy_ext:metal/solder",
-    "tfc_alloy_ext:metal/flowing_solder"
+    "tfc_alloy_ext:metal/flowing_solder",
+    "tfc_alloy_ext:metal/ferronickel",
+    "tfc_alloy_ext:metal/flowing_ferronickel",
+    "tfc_alloy_ext:metal/ferrochromium",
+    "tfc_alloy_ext:metal/flowing_ferrochromium"
   ]
 }
